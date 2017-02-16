@@ -30,5 +30,7 @@ ADD_SUBDIRECTORY(lz4)
 ADD_SUBDIRECTORY(lzma)
 ADD_SUBDIRECTORY(lzo)
 
+ADD_SUBDIRECTORY(libarchive)
+
 
 #----------------------------------------------------------------------------
