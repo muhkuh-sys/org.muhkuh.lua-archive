@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jonchki-artifact version="1.0">
+	<info group="com.github.brimworks"
+	      module="lua-archive"
+	      artifact="lua5.2-lua-archive"
+	      version="@PROJECT_VERSION@"
+	      vcs-id="@PROJECT_VERSION_VCS@">
+		<license name="MIT"/>
+		<author name="Brian Maher" url="https://github.com/brimworks/lua-archive" />
+		<description>
+			libarchive integration with Lua so you can read and write tarballs from Lua.
+		</description>
+	</info>
+	<build-dependencies>
+		<dependency group="org.lua" module="lua" artifact="lua5.2" version="5.2.4.1"/>
+		<dependency group="net.zlib" module="zlib" artifact="zlib" version="1.2.8.1"/>
+	</build-dependencies>
+	<dependencies>
+		<dependency group="org.lua" module="lua" artifact="lua5.2"/>
+	</dependencies>
+</jonchki-artifact>
