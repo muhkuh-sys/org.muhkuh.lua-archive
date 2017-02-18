@@ -25,15 +25,18 @@ CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/lua-archive.xml
 IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 
 
-	SET(LIBARCHIVE_INCLUDE_DIR "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/libarchive/install/include")
-	SET(LIBARCHIVE_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/libarchive/install/lib/libarchive.a")
+	SET(LIBARCHIVE_INCLUDE_DIR "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/libarchive/install/include")
+	SET(LIBARCHIVE_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/libarchive/install/lib/libarchive.a")
 
-	SET(ZLIB_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/lua5.1/build_requirements/jonchki/install/dev/lib/libz.a")
-	SET(BZIP2_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/bzip2/install/lib/libbzip2.a")
-	SET(LZMA_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/lzma/install/lib/liblzma.a")
-	SET(LZ4_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/lz4/install/lib/liblz4.a")
-	SET(LZO_LIBRARY "/home/baccy/workspace/com.github.libarchive-libarchive/build/linux/external/lzo/install/lib/liblzo2.a")
+	SET(ZLIB_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/lua5.1/build_requirements/jonchki/install/dev/lib/libz.a")
+	SET(BZIP2_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/bzip2/install/lib/libbzip2.a")
+	SET(LZMA_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzma/install/lib/liblzma.a")
+	SET(LZ4_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lz4/install/lib/liblz4.a")
+	SET(LZO_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzo/install/lib/liblzo2.a")
 
+
+	# Add a custom target for the swig runtime for LUA.
+	INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/muhkuh_swig_lua_runtime.cmake)
 
 	# Select the LUA version.
 	INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/muhkuh_lua.cmake)
@@ -43,6 +46,7 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	INCLUDE(${SWIG_USE_FILE})
 
 	INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
+	INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/swig_runtime)
 	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 	INCLUDE_DIRECTORIES(${LIBARCHIVE_INCLUDE_DIR})
 
@@ -50,6 +54,7 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	SET_SOURCE_FILES_PROPERTIES(archive.i PROPERTIES SWIG_FLAGS "")
 	SWIG_ADD_MODULE(TARGET_archive lua archive.i wrapper.cpp)
 	SWIG_LINK_LIBRARIES(TARGET_archive ${LUA_LIBRARIES} ${LIBARCHIVE_LIBRARY} ${ZLIB_LIBRARY} ${BZIP2_LIBRARY} ${LZMA_LIBRARY} ${LZ4_LIBRARY} ${LZO_LIBRARY})
+	ADD_DEPENDENCIES(TARGET_archive TARGET_swigluarun)
 
 	# Set the name of the output file to "archive".
 	SET_TARGET_PROPERTIES(TARGET_archive PROPERTIES PREFIX "" OUTPUT_NAME "archive")

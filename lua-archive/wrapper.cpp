@@ -256,7 +256,7 @@ int ArchiveEntry::ino_is_set(void)
 
 
 
-__LA_MODE_T ArchiveEntry::mode(void)
+int ArchiveEntry::mode(void)
 {
 	return archive_entry_mode(m_ptArchiveEntry);
 }
@@ -312,7 +312,7 @@ const wchar_t* ArchiveEntry::pathname_w(void)
 
 
 
-__LA_MODE_T ArchiveEntry::perm(void)
+int ArchiveEntry::perm(void)
 {
 	return archive_entry_perm(m_ptArchiveEntry);
 }
@@ -445,6 +445,375 @@ int ArchiveEntry::is_encrypted(void)
 
 
 
+ArchiveEntry* ArchiveEntry::set_atime(time_t tTime, long lNs)
+{
+	archive_entry_set_atime(m_ptArchiveEntry, tTime, lNs);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::unset_atime(void)
+{
+	archive_entry_unset_atime(m_ptArchiveEntry);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_birthtime(time_t tTime, long lNs)
+{
+	archive_entry_set_birthtime(m_ptArchiveEntry, tTime, lNs);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::unset_birthtime(void)
+{
+	archive_entry_unset_birthtime(m_ptArchiveEntry);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_ctime(time_t tTime, long lNs)
+{
+	archive_entry_set_ctime(m_ptArchiveEntry, tTime, lNs);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::unset_ctime(void)
+{
+	archive_entry_unset_ctime(m_ptArchiveEntry);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_dev(dev_t tDev)
+{
+	archive_entry_set_dev(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_devmajor(dev_t tDev)
+{
+	archive_entry_set_devmajor(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_devminor(dev_t tDev)
+{
+	archive_entry_set_devminor(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_filetype(unsigned int uiFileType)
+{
+	archive_entry_set_filetype(m_ptArchiveEntry, uiFileType);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_gid(la_int64_t llGid)
+{
+	archive_entry_set_gid(m_ptArchiveEntry, llGid);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_gname(const char *pcGname)
+{
+	archive_entry_set_gname(m_ptArchiveEntry, pcGname);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_gname_utf8(const char *pcGname)
+{
+	archive_entry_set_gname_utf8(m_ptArchiveEntry, pcGname);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_gname(const char *pcGname)
+{
+	archive_entry_copy_gname(m_ptArchiveEntry, pcGname);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_gname_w(const wchar_t *pcGname)
+{
+	archive_entry_copy_gname_w(m_ptArchiveEntry, pcGname);
+	return this;
+}
+
+
+
+int ArchiveEntry::update_gname_utf8(const char *pcGname)
+{
+	return archive_entry_update_gname_utf8(m_ptArchiveEntry, pcGname);
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_hardlink(const char *pcHardlink)
+{
+	archive_entry_set_hardlink(m_ptArchiveEntry, pcHardlink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_hardlink_utf8(const char *pcHardlink)
+{
+	archive_entry_set_hardlink_utf8(m_ptArchiveEntry, pcHardlink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_hardlink(const char *pcHardlink)
+{
+	archive_entry_copy_hardlink(m_ptArchiveEntry, pcHardlink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_hardlink_w(const wchar_t *pcHardlink)
+{
+	archive_entry_copy_hardlink_w(m_ptArchiveEntry, pcHardlink);
+	return this;
+}
+
+
+
+int ArchiveEntry::update_hardlink_utf8(const char *pcHardlink)
+{
+	return archive_entry_update_hardlink_utf8(m_ptArchiveEntry, pcHardlink);
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_ino(la_int64_t llIno)
+{
+	archive_entry_set_ino(m_ptArchiveEntry, llIno);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_ino64(la_int64_t llIno)
+{
+	archive_entry_set_ino64(m_ptArchiveEntry, llIno);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_link(const char *pcLink)
+{
+	archive_entry_set_link(m_ptArchiveEntry, pcLink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_link_utf8(const char *pcLink)
+{
+	archive_entry_set_link_utf8(m_ptArchiveEntry, pcLink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_link(const char *pcLink)
+{
+	archive_entry_copy_link(m_ptArchiveEntry, pcLink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_link_w(const wchar_t *pcLink)
+{
+	archive_entry_copy_link_w(m_ptArchiveEntry, pcLink);
+	return this;
+}
+
+
+
+int ArchiveEntry::update_link_utf8(const char *pcLink)
+{
+	return archive_entry_update_link_utf8(m_ptArchiveEntry, pcLink);
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_mode(int iMode)
+{
+	archive_entry_set_mode(m_ptArchiveEntry, iMode);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_mtime(time_t tTime, long lNs)
+{
+	archive_entry_set_mtime(m_ptArchiveEntry, tTime, lNs);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::unset_mtime(void)
+{
+	archive_entry_unset_mtime(m_ptArchiveEntry);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_nlink(unsigned int uiNlink)
+{
+	archive_entry_set_nlink(m_ptArchiveEntry, uiNlink);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_pathname(const char *pcPathName)
+{
+	archive_entry_set_pathname(m_ptArchiveEntry, pcPathName);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_pathname_utf8(const char *pcPathName)
+{
+	archive_entry_set_pathname_utf8(m_ptArchiveEntry, pcPathName);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_pathname(const char *pcPathName)
+{
+	archive_entry_copy_pathname(m_ptArchiveEntry, pcPathName);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_pathname_w(const wchar_t *pcPathName)
+{
+	archive_entry_copy_pathname_w(m_ptArchiveEntry, pcPathName);
+	return this;
+}
+
+
+
+int ArchiveEntry::update_pathname_utf8(const char *pcPathName)
+{
+	return archive_entry_update_pathname_utf8(m_ptArchiveEntry, pcPathName);
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_perm(int iMode)
+{
+	archive_entry_set_perm(m_ptArchiveEntry, iMode);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_rdev(dev_t tDev)
+{
+	archive_entry_set_rdev(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_rdevmajor(dev_t tDev)
+{
+	archive_entry_set_rdevmajor(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_rdevminor(dev_t tDev)
+{
+	archive_entry_set_rdevminor(m_ptArchiveEntry, tDev);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_size(la_int64_t llSize )
+{
+	archive_entry_set_size(m_ptArchiveEntry, llSize);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::unset_size(void)
+{
+	archive_entry_unset_size(m_ptArchiveEntry);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_sourcepath(const char *pcPath)
+{
+	archive_entry_copy_sourcepath(m_ptArchiveEntry, pcPath);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::copy_sourcepath_w(const wchar_t *pcPath)
+{
+	archive_entry_copy_sourcepath_w(m_ptArchiveEntry, pcPath);
+	return this;
+}
+
+
+
+ArchiveEntry* ArchiveEntry::set_symlink(const char *pcPath)
+{
+	archive_entry_set_symlink(m_ptArchiveEntry, pcPath);
+	return this;
+}
+
+
+
+struct archive_entry *ArchiveEntry::_get_raw(void)
+{
+	return m_ptArchiveEntry;
+}
+
 
 /*--------------------------------------------------------------------------*/
 
@@ -452,18 +821,48 @@ int ArchiveEntry::is_encrypted(void)
 Archive::Archive(void)
  : m_ptArchive(NULL)
 {
-	/* Allocate a new archive structure. */
-	m_ptArchive = archive_read_new();
 }
 
 
 
 Archive::~Archive(void)
 {
+}
+
+
+
+int Archive::errno(void)
+{
+	return archive_errno(m_ptArchive);
+}
+
+
+
+const char* Archive::error_string(void)
+{
+	return archive_error_string(m_ptArchive);
+}
+
+
+
+/*--------------------------------------------------------------------------*/
+
+
+ArchiveRead::ArchiveRead(void)
+ : Archive()
+{
+	/* Allocate a new archive structure. */
+	m_ptArchive = archive_read_new();
+}
+
+
+
+ArchiveRead::~ArchiveRead(void)
+{
 	int iResult;
 
 
-	printf("~archive\n");
+	printf("~ArchiveRead\n");
 
 	if( m_ptArchive!=NULL )
 	{
@@ -478,28 +877,28 @@ Archive::~Archive(void)
 
 
 
-int Archive::read_support_filter_all(void)
+int ArchiveRead::support_filter_all(void)
 {
 	return archive_read_support_filter_all(m_ptArchive);
 }
 
 
 
-int Archive::read_support_format_all(void)
+int ArchiveRead::support_format_all(void)
 {
 	return archive_read_support_format_all(m_ptArchive);
 }
 
 
 
-int Archive::read_open_filename(const char *_filename, size_t _block_size)
+int ArchiveRead::open_filename(const char *_filename, size_t _block_size)
 {
 	return archive_read_open_filename(m_ptArchive, _filename, _block_size);
 }
 
 
 
-ArchiveEntry *Archive::read_next_header(void)
+ArchiveEntry *ArchiveRead::next_header(void)
 {
 	int iResult;
 	struct archive_entry* ptArchiveEntryStruct;
@@ -519,10 +918,543 @@ ArchiveEntry *Archive::read_next_header(void)
 
 
 
-int Archive::read_data_skip(void)
+void ArchiveRead::iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry)
+{
+	/* Push the pointer to this instance of the "Archive" class as the first up-value. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
+	/* Push the type of the result as the second up-value. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)p_ArchiveEntry);
+	/* Create a C closure with 2 arguments. */
+	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_next_header), 2);
+
+	/* NOTE: This function does not return the produced number of
+	 *       arguments. This is done in the SWIG wrapper.
+	 */
+}
+
+
+
+int ArchiveRead::iterator_next_header(lua_State *ptLuaState)
+{
+	int iUpvalueIndex;
+	void *pvUpvalue;
+	ArchiveRead *ptThis;
+	swig_type_info *ptTypeInfo;
+	ArchiveEntry *ptArchiveEntry;
+
+
+	/* Get the first up-value. */
+	iUpvalueIndex = lua_upvalueindex(1);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	/* Cast the up-value to a class pointer. */
+	ptThis = (ArchiveRead*)pvUpvalue;
+
+	/* Get the second up-value. */
+	iUpvalueIndex = lua_upvalueindex(2);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	ptTypeInfo = (swig_type_info*)pvUpvalue;
+
+	/* Get the next archive entry. */
+	ptArchiveEntry = ptThis->next_header();
+	/* Push the class on the LUA stack. */
+	if( ptArchiveEntry==NULL )
+	{
+		lua_pushnil(ptLuaState);
+	}
+	else
+	{
+		/* Create a new pointer object from the archive entry and transfer the ownership to LUA (this is the last parameter). */
+		SWIG_NewPointerObj(ptLuaState, ptArchiveEntry, ptTypeInfo, 1);
+	}
+
+	return 1;
+}
+
+
+
+int ArchiveRead::data_skip(void)
 {
 	return archive_read_data_skip(m_ptArchive);
 }
 
 
 
+void ArchiveRead::read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT)
+{
+	la_ssize_t sResult;
+	char *pcBuffer;
+	size_t sizRead;
+
+
+	/* No data read yet. */
+	sizRead = 0;
+
+	/* Allocate the buffer. */
+	pcBuffer = (char*)malloc(sizChunk);
+	if( pcBuffer!=NULL )
+	{
+		sResult = archive_read_data(m_ptArchive, pcBuffer, sizChunk);
+		if( sResult<0 )
+		{
+			/* An error occured, discard the data. */
+			free(pcBuffer);
+			pcBuffer = NULL;
+		}
+		else
+		{
+			sizRead = (size_t)sResult;
+		}
+	}
+
+	*ppcBUFFER_OUT = pcBuffer;
+	*psizBUFFER_OUT = sizRead;
+}
+
+
+
+void ArchiveRead::iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT)
+{
+	lua_Number tNumber;
+
+
+	/* Push the pointer to this instance of the "Archive" class as the first upvalue. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
+	/* Push the chunk size as the second upvalue. */
+	tNumber = (lua_Number)sizChunk;
+	lua_pushnumber(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, tNumber);
+	/* Create a C closure with 2 arguments. */
+	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_read_data), 2);
+
+	/* NOTE: This function does not return the produced number of
+	 *       arguments. This is done in the SWIG wrapper.
+	 */
+}
+
+
+
+int ArchiveRead::iterator_read_data(lua_State *ptLuaState)
+{
+	int iUpvalueIndex;
+	void *pvUpvalue;
+	lua_Number tNumber;
+	ArchiveRead *ptThis;
+	size_t sizChunk;
+	char *pcBuffer;
+	size_t sizBuffer;
+
+
+	/* Get the first up-value. */
+	iUpvalueIndex = lua_upvalueindex(1);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	/* Cast the up-value to a class pointer. */
+	ptThis = (ArchiveRead*)pvUpvalue;
+
+	/* Get the second up-value. */
+	iUpvalueIndex = lua_upvalueindex(2);
+	tNumber = lua_tonumber(ptLuaState, iUpvalueIndex);
+	sizChunk = (size_t)tNumber;
+
+	/* Get the next data chunk. */
+	ptThis->read_data(sizChunk, &pcBuffer, &sizBuffer);
+	/* Push the class on the LUA stack. */
+	if( pcBuffer!=NULL && sizBuffer!=0 )
+	{
+		lua_pushlstring(ptLuaState, pcBuffer, sizBuffer);
+	}
+	else
+	{
+		lua_pushnil(ptLuaState);
+	}
+
+	return 1;
+}
+
+
+
+/*--------------------------------------------------------------------------*/
+
+
+ArchiveWrite::ArchiveWrite(void)
+ : Archive()
+{
+	/* Allocate a new archive structure. */
+	m_ptArchive = archive_write_new();
+}
+
+
+
+ArchiveWrite::~ArchiveWrite(void)
+{
+	int iResult;
+
+
+	printf("~ArchiveWrite\n");
+
+	if( m_ptArchive!=NULL )
+	{
+		iResult = archive_write_free(m_ptArchive);
+		if( iResult!=ARCHIVE_OK )
+		{
+			printf("Failed to free the archive structure!\n");
+		}
+		m_ptArchive = NULL;
+	}
+}
+
+
+
+int ArchiveWrite::add_filter(int filter_code)
+{
+	return archive_write_add_filter(m_ptArchive, filter_code);
+}
+
+
+
+int ArchiveWrite::add_filter_by_name(const char *name)
+{
+	return archive_write_add_filter_by_name(m_ptArchive, name);
+}
+
+
+
+int ArchiveWrite::add_filter_b64encode(void)
+{
+	return archive_write_add_filter_b64encode(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_bzip2(void)
+{
+	return archive_write_add_filter_bzip2(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_compress(void)
+{
+	return archive_write_add_filter_compress(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_grzip(void)
+{
+	return archive_write_add_filter_grzip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_gzip(void)
+{
+	return archive_write_add_filter_gzip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_lrzip(void)
+{
+	return archive_write_add_filter_lrzip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_lz4(void)
+{
+	return archive_write_add_filter_lz4(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_lzip(void)
+{
+	return archive_write_add_filter_lzip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_lzma(void)
+{
+	return archive_write_add_filter_lzma(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_lzop(void)
+{
+	return archive_write_add_filter_lzop(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_none(void)
+{
+	return archive_write_add_filter_none(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_program(const char *cmd)
+{
+	return archive_write_add_filter_program(m_ptArchive, cmd);
+}
+
+
+
+int ArchiveWrite::add_filter_uuencode(void)
+{
+	return archive_write_add_filter_uuencode(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::add_filter_xz(void)
+{
+	return archive_write_add_filter_xz(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format(int format_code)
+{
+	return archive_write_set_format(m_ptArchive, format_code);
+}
+
+
+
+int ArchiveWrite::set_format_by_name(const char *name)
+{
+	return archive_write_set_format_by_name(m_ptArchive, name);
+}
+
+
+
+int ArchiveWrite::set_format_7zip(void)
+{
+	return archive_write_set_format_7zip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_ar_bsd(void)
+{
+	return archive_write_set_format_ar_bsd(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_ar_svr4(void)
+{
+	return archive_write_set_format_ar_svr4(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_cpio(void)
+{
+	return archive_write_set_format_cpio(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_cpio_newc(void)
+{
+	return archive_write_set_format_cpio_newc(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_gnutar(void)
+{
+	return archive_write_set_format_gnutar(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_iso9660(void)
+{
+	return archive_write_set_format_iso9660(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_mtree(void)
+{
+	return archive_write_set_format_mtree(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_mtree_classic(void)
+{
+	return archive_write_set_format_mtree_classic(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_pax(void)
+{
+	return archive_write_set_format_pax(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_pax_restricted(void)
+{
+	return archive_write_set_format_pax_restricted(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_raw(void)
+{
+	return archive_write_set_format_raw(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_shar(void)
+{
+	return archive_write_set_format_shar(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_shar_dump(void)
+{
+	return archive_write_set_format_shar_dump(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_ustar(void)
+{
+	return archive_write_set_format_ustar(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_v7tar(void)
+{
+	return archive_write_set_format_v7tar(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_warc(void)
+{
+	return archive_write_set_format_warc(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_xar(void)
+{
+	return archive_write_set_format_xar(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_zip(void)
+{
+	return archive_write_set_format_zip(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::set_format_filter_by_ext(const char *filename)
+{
+	return archive_write_set_format_filter_by_ext(m_ptArchive, filename);
+}
+
+
+
+int ArchiveWrite::set_format_filter_by_ext_def(const char *filename, const char * def_ext)
+{
+	return archive_write_set_format_filter_by_ext_def(m_ptArchive, filename, def_ext);
+}
+
+
+
+int ArchiveWrite::zip_set_compression_deflate(void)
+{
+	return archive_write_zip_set_compression_deflate(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::zip_set_compression_store(void)
+{
+	return archive_write_zip_set_compression_store(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::open_filename(const char *_file)
+{
+	return archive_write_open_filename(m_ptArchive, _file);
+}
+
+
+
+int ArchiveWrite::open_filename_w(const wchar_t *_file)
+{
+	return archive_write_open_filename_w(m_ptArchive, _file);
+}
+
+
+
+int ArchiveWrite::write_header(ArchiveEntry *ptEntry)
+{
+	struct archive_entry *ptArchiveEntryStruct;
+
+
+	/* Get the archive entry structure from the class. */
+	ptArchiveEntryStruct = ptEntry->_get_raw();
+	return archive_write_header(m_ptArchive, ptArchiveEntryStruct);
+}
+
+
+
+int ArchiveWrite::write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN)
+{
+	int iResult;
+	la_ssize_t sResult;
+	const char *pcCnt;
+	size_t sizLeft;
+
+
+	iResult = 0;
+	pcCnt = pcBUFFER_IN;
+	sizLeft = sizBUFFER_IN;
+	while( sizLeft!=0 )
+	{
+		sResult = archive_write_data(m_ptArchive, pcCnt, sizLeft);
+		if( sResult<0 )
+		{
+			iResult = sResult;
+			break;
+		}
+		else
+		{
+			pcCnt += sResult;
+			sizLeft -= sResult;
+		}
+	}
+
+	return iResult;
+}
+
+
+
+int ArchiveWrite::finish_entry(void)
+{
+	return archive_write_finish_entry(m_ptArchive);
+}
+
+
+
+int ArchiveWrite::close(void)
+{
+	return archive_write_close(m_ptArchive);
+}

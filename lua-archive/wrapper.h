@@ -1,11 +1,30 @@
 #include "archive.h"
 #include "archive_entry.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "lua.h"
+#ifdef __cplusplus
+}
+#endif
+
+
 #include <stdint.h>
+
+
+
+#ifndef SWIGRUNTIME
+#include <swigluarun.h>
+#endif
+
 
 
 #ifndef __WRAPPER_H__
 #define __WRAPPER_H__
+
+
+
 
 
 int version_number(void);
@@ -56,7 +75,7 @@ public:
 	int64_t        ino(void);
 	int64_t        ino64(void);
 	int            ino_is_set(void);
-	__LA_MODE_T    mode(void);
+	int            mode(void);
 	time_t         mtime(void);
 	long           mtime_nsec(void);
 	int            mtime_is_set(void);
@@ -64,7 +83,7 @@ public:
 	const char    *pathname(void);
 	const char    *pathname_utf8(void);
 	const wchar_t *pathname_w(void);
-	__LA_MODE_T    perm(void);
+	int            perm(void);
 	dev_t          rdev(void);
 	dev_t          rdevmajor(void);
 	dev_t          rdevminor(void);
@@ -85,6 +104,67 @@ public:
 	int            is_encrypted(void);
 
 
+	ArchiveEntry* set_atime(time_t, long);
+	ArchiveEntry* unset_atime(void);
+	ArchiveEntry* set_birthtime(time_t, long);
+	ArchiveEntry* unset_birthtime(void);
+	ArchiveEntry* set_ctime(time_t, long);
+	ArchiveEntry* unset_ctime(void);
+	ArchiveEntry* set_dev(dev_t);
+	ArchiveEntry* set_devmajor(dev_t);
+	ArchiveEntry* set_devminor(dev_t);
+	ArchiveEntry* set_filetype(unsigned int);
+#if 0
+__LA_DECL void  archive_entry_set_fflags(void,
+            unsigned long /* set */, unsigned long /* clear */);
+/* Returns pointer to start of first invalid token, or NULL if none. */
+/* Note that all recognized tokens are processed, regardless. */
+__LA_DECL const char *archive_entry_copy_fflags_text(void,
+            const char *);
+__LA_DECL const wchar_t *archive_entry_copy_fflags_text_w(void,
+            const wchar_t *);
+#endif
+	ArchiveEntry* set_gid(int64_t);
+	ArchiveEntry* set_gname(const char *);
+	ArchiveEntry* set_gname_utf8(const char *);
+	ArchiveEntry* copy_gname(const char *);
+	ArchiveEntry* copy_gname_w(const wchar_t *);
+	int update_gname_utf8(const char *);
+	ArchiveEntry* set_hardlink(const char *);
+	ArchiveEntry* set_hardlink_utf8(const char *);
+	ArchiveEntry* copy_hardlink(const char *);
+	ArchiveEntry* copy_hardlink_w(const wchar_t *);
+	int update_hardlink_utf8(const char *);
+	ArchiveEntry* set_ino(int64_t);
+	ArchiveEntry* set_ino64(int64_t);
+	ArchiveEntry* set_link(const char *);
+	ArchiveEntry* set_link_utf8(const char *);
+	ArchiveEntry* copy_link(const char *);
+	ArchiveEntry* copy_link_w(const wchar_t *);
+	int update_link_utf8(const char *);
+	ArchiveEntry* set_mode(int);
+	ArchiveEntry* set_mtime(time_t, long);
+	ArchiveEntry* unset_mtime(void);
+	ArchiveEntry* set_nlink(unsigned int);
+	ArchiveEntry* set_pathname(const char *);
+	ArchiveEntry* set_pathname_utf8(const char *);
+	ArchiveEntry* copy_pathname(const char *);
+	ArchiveEntry* copy_pathname_w(const wchar_t *);
+	int update_pathname_utf8(const char *);
+	ArchiveEntry* set_perm(int);
+	ArchiveEntry* set_rdev(dev_t);
+	ArchiveEntry* set_rdevmajor(dev_t);
+	ArchiveEntry* set_rdevminor(dev_t);
+	ArchiveEntry* set_size(int64_t);
+	ArchiveEntry* unset_size(void);
+	ArchiveEntry* copy_sourcepath(const char *);
+	ArchiveEntry* copy_sourcepath_w(const wchar_t *);
+	ArchiveEntry* set_symlink(const char *);
+
+#ifndef SWIG
+	struct archive_entry *_get_raw(void);
+#endif
+
 private:
 	struct archive_entry *m_ptArchiveEntry;
 };
@@ -97,18 +177,97 @@ public:
 	Archive(void);
 	~Archive(void);
 
-	int read_support_filter_all(void);
-	int read_support_format_all(void);
+	int errno(void);
+	const char* error_string(void);
 
-	int read_open_filename(const char *_filename, size_t _block_size);
-
-	ArchiveEntry *read_next_header(void);
-
-	int read_data_skip(void);
-
-
-private:
+protected:
 	struct archive *m_ptArchive;
+};
+
+
+
+class ArchiveRead : public Archive
+{
+public:
+	ArchiveRead(void);
+	~ArchiveRead(void);
+
+	int support_filter_all(void);
+	int support_format_all(void);
+
+	int open_filename(const char *_filename, size_t _block_size);
+
+	ArchiveEntry *next_header(void);
+	void iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry);
+
+	void read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT);
+	void iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT);
+
+	int data_skip(void);
+
+	static int iterator_next_header(lua_State *ptLuaState);
+	static int iterator_read_data(lua_State *ptLuaState);
+};
+
+
+
+class ArchiveWrite : public Archive
+{
+public:
+	ArchiveWrite(void);
+	~ArchiveWrite(void);
+
+	int add_filter(int filter_code);
+	int add_filter_by_name(const char *name);
+	int add_filter_b64encode(void);
+	int add_filter_bzip2(void);
+	int add_filter_compress(void);
+	int add_filter_grzip(void);
+	int add_filter_gzip(void);
+	int add_filter_lrzip(void);
+	int add_filter_lz4(void);
+	int add_filter_lzip(void);
+	int add_filter_lzma(void);
+	int add_filter_lzop(void);
+	int add_filter_none(void);
+	int add_filter_program(const char *cmd);
+	int add_filter_uuencode(void);
+	int add_filter_xz(void);
+
+	int set_format(int format_code);
+	int set_format_by_name(const char *name);
+	int set_format_7zip(void);
+	int set_format_ar_bsd(void);
+	int set_format_ar_svr4(void);
+	int set_format_cpio(void);
+	int set_format_cpio_newc(void);
+	int set_format_gnutar(void);
+	int set_format_iso9660(void);
+	int set_format_mtree(void);
+	int set_format_mtree_classic(void);
+	int set_format_pax(void);
+	int set_format_pax_restricted(void);
+	int set_format_raw(void);
+	int set_format_shar(void);
+	int set_format_shar_dump(void);
+	int set_format_ustar(void);
+	int set_format_v7tar(void);
+	int set_format_warc(void);
+	int set_format_xar(void);
+	int set_format_zip(void);
+	int set_format_filter_by_ext(const char *filename);
+	int set_format_filter_by_ext_def(const char *filename, const char * def_ext);
+
+	int zip_set_compression_deflate(void);
+	int zip_set_compression_store(void);
+
+	int open_filename(const char *_file);
+	int open_filename_w(const wchar_t *_file);
+
+	int write_header(ArchiveEntry *ptEntry);
+	int write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN);
+	int finish_entry(void);
+	int close(void);
 };
 
 
