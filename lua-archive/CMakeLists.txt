@@ -28,11 +28,11 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	SET(LIBARCHIVE_INCLUDE_DIR "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/libarchive/install/include")
 	SET(LIBARCHIVE_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/libarchive/install/lib/libarchive.a")
 
-	SET(ZLIB_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/lua5.1/build_requirements/jonchki/install/dev/lib/libz.a")
-	SET(BZIP2_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/bzip2/install/lib/libbzip2.a")
-	SET(LZMA_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzma/install/lib/liblzma.a")
-	SET(LZ4_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lz4/install/lib/liblz4.a")
-	SET(LZO_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzo/install/lib/liblzo2.a")
+#	SET(ZLIB_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/lua5.1/build_requirements/jonchki/install/dev/lib/libz.a")
+#	SET(BZIP2_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/bzip2/install/lib/libbzip2.a")
+#	SET(LZMA_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzma/install/lib/liblzma.a")
+#	SET(LZ4_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lz4/install/lib/liblz4.a")
+#	SET(LZO_LIBRARY "/home/baccy/workspace/org.muhkuh.lua-archive/build/linux/external/lzo/install/lib/liblzo2.a")
 
 
 	# Add a custom target for the swig runtime for LUA.
@@ -53,7 +53,7 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	SET_SOURCE_FILES_PROPERTIES(archive.i PROPERTIES CPLUSPLUS ON)
 	SET_SOURCE_FILES_PROPERTIES(archive.i PROPERTIES SWIG_FLAGS "")
 	SWIG_ADD_MODULE(TARGET_archive lua archive.i wrapper.cpp)
-	SWIG_LINK_LIBRARIES(TARGET_archive ${LUA_LIBRARIES} ${LIBARCHIVE_LIBRARY} ${ZLIB_LIBRARY} ${BZIP2_LIBRARY} ${LZMA_LIBRARY} ${LZ4_LIBRARY} ${LZO_LIBRARY})
+	SWIG_LINK_LIBRARIES(TARGET_archive ${LUA_LIBRARIES} ${LIBARCHIVE_LIBRARY})
 	ADD_DEPENDENCIES(TARGET_archive TARGET_swigluarun)
 
 	# Set the name of the output file to "archive".
