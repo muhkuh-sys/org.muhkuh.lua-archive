@@ -24,7 +24,6 @@ ENDIF(${CMAKE_BUILD_TOOL} MATCHES "(msdev|VCExpress|devenv)")
 #
 # Include the projects in the subdirectories.
 #
-# libnettle and gnutls depend on GMP.
 ADD_SUBDIRECTORY(bzip2)
 ADD_SUBDIRECTORY(lz4)
 ADD_SUBDIRECTORY(lzma)
