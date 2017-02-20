@@ -1,0 +1,8 @@
+# Ignore all files in the targets folder.
+/build/
+
+# Ignore all compiled python modules.
+*.pyc
+
+# Ignore all backup files.
+*~
