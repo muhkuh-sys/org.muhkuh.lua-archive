@@ -42,32 +42,22 @@ MESSAGE("ZLIB_INCLUDE_DIR: ${ZLIB_INCLUDE_DIR}")
 SET(ZLIB_LIB_DIR ${ZLIB_INCLUDE_DIR}/../lib)
 SET(ZLIB_LIB "z")
 
+
 # Get the includes and libraries for bzip2
-SET(BZIP2_LIB_DIR "${CMAKE_BINARY_DIR}/bzip2/install/lib")
+SET(EXTERNAL_LIB_DIR "${CMAKE_BINARY_DIR}/install/lib")
+SET(EXTERNAL_INCLUDE_DIR "${CMAKE_BINARY_DIR}/install/include")
+
 SET(BZIP2_LIB "bzip2")
-SET(BZIP2_INCLUDE_DIR "${CMAKE_BINARY_DIR}/bzip2/install/include")
-
-# Get the includes and libraries for lzma.
-SET(LZMA_LIB_DIR "${CMAKE_BINARY_DIR}/lzma/install/lib")
 SET(LZMA_LIB "lzma")
-SET(LZMA_INCLUDE_DIR "${CMAKE_BINARY_DIR}/lzma/install/include")
-
-# Get the includes and libraries for lzo2.
-SET(LZO2_LIB_DIR "${CMAKE_BINARY_DIR}/lzo/install/lib")
 SET(LZO2_LIB "lzo2")
-SET(LZO2_INCLUDE_DIR "${CMAKE_BINARY_DIR}/lzo/install/include")
-
-# Get the includes and libraries for lz4.
-SET(LZ4_LIB_DIR "${CMAKE_BINARY_DIR}/lz4/install/lib")
 SET(LZ4_LIB "lz4")
-SET(LZ4_INCLUDE_DIR "${CMAKE_BINARY_DIR}/lz4/install/include")
 
 
 ExternalProject_Add(TARGET_libarchive
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libarchive-${VERSION_EXTERNAL}.tar.gz
                     URL_HASH SHA1=ccf14e3b4ec7c6b242cf07062dd40e82a17485a5
-                    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${ZLIB_INCLUDE_DIR} -I${BZIP2_INCLUDE_DIR} -I${LZMA_INCLUDE_DIR} -I${LZO2_INCLUDE_DIR} -I${LZ4_INCLUDE_DIR}" "LDFLAGS=-L${ZLIB_LIB_DIR} -L${BZIP2_LIB_DIR} -L${LZMA_LIB_DIR} -L${LZO2_LIB_DIR} -L${LZ4_LIB_DIR}" "LIBS=-l${ZLIB_LIB} -l${BZIP2_LIB} -l${LZMA_LIB} -l${LZO2_LIB} -l${LZ4_LIB}" ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}/src/TARGET_libarchive/configure --prefix=${CMAKE_CURRENT_BINARY_DIR}/install --enable-shared=no --enable-static=yes --with-zlib --with-bz2lib --with-lz4 --with-lzma --with-lzo2 --without-nettle --without-openssl --without-xml2 --without-expat --with-pic ${CONFIGURE_HOST}
+                    CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env "CPPFLAGS=-I${ZLIB_INCLUDE_DIR} -I${EXTERNAL_INCLUDE_DIR}" "LDFLAGS=-L${ZLIB_LIB_DIR} -L${EXTERNAL_LIB_DIR}" "LIBS=-l${ZLIB_LIB} -l${BZIP2_LIB} -l${LZMA_LIB} -l${LZO2_LIB} -l${LZ4_LIB}" ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}/src/TARGET_libarchive/configure --prefix=${CMAKE_BINARY_DIR}/install --enable-shared=no --enable-static=yes --with-zlib --with-bz2lib --with-lz4 --with-lzma --with-lzo2 --without-nettle --without-openssl --without-xml2 --without-expat --with-pic ${CONFIGURE_HOST}
                     BUILD_COMMAND make
                     INSTALL_COMMAND make install
 )

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.7)
 
-PROJECT("bzip2")
+PROJECT("bzip2"
+        VERSION ${VERSION_EXTERNAL})
 
 
 #----------------------------------------------------------------------------
@@ -26,7 +27,6 @@ ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STR
 # Set the name of the output file to "bzip2".
 SET_TARGET_PROPERTIES(TARGET_bzip2 PROPERTIES OUTPUT_NAME "bzip2")
 
-SET(CMAKE_INSTALL_PREFIX /install)
 INSTALL(TARGETS TARGET_bzip2
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
