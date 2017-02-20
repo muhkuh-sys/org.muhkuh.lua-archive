@@ -831,7 +831,7 @@ Archive::~Archive(void)
 
 
 
-int Archive::errno(void)
+int Archive::error_errno(void)
 {
 	return archive_errno(m_ptArchive);
 }

@@ -177,7 +177,7 @@ public:
 	Archive(void);
 	~Archive(void);
 
-	int errno(void);
+	int error_errno(void);
 	const char* error_string(void);
 
 protected:
