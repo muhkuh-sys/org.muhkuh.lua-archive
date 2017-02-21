@@ -16,12 +16,13 @@ mkdir -p ${PRJDIR}/build
 lxc launch mbs-ubuntu-1604-x64 ${CONTAINER} -c security.privileged=true
 lxc config device add ${CONTAINER} projectDir disk source=${PRJDIR} path=/tmp/work
 sleep 5
+lxc file push /etc/resolv.conf ${CONTAINER}/etc/resolv.conf
 
 # Update the package list to prevent "not found" messages.
 lxc exec ${CONTAINER} -- bash -c 'apt-get update --assume-yes'
 
 # Install the project specific packages.
-lxc exec ${CONTAINER} -- bash -c 'apt-get install --assume-yes lua5.1 lua-filesystem lua-expat lua51-mhash lua-curl lua-zip'
+lxc exec ${CONTAINER} -- bash -c 'apt-get install --assume-yes lua5.1 lua-filesystem lua-expat lua51-mhash lua-curl lua-zip swig3'
 
 # Build the 32bit version.
 lxc exec ${CONTAINER} -- bash -c 'export PATH=/usr/mingw-w64-i686/bin:${PATH} && cd /tmp/work && bash .build01_windows32.sh'
