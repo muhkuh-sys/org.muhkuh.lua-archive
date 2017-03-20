@@ -884,9 +884,226 @@ int ArchiveRead::support_filter_all(void)
 
 
 
+int ArchiveRead::support_filter_bzip2(void)
+{
+	return archive_read_support_filter_bzip2(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_compress(void)
+{
+	return archive_read_support_filter_compress(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_gzip(void)
+{
+	return archive_read_support_filter_gzip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_grzip(void)
+{
+	return archive_read_support_filter_grzip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_lrzip(void)
+{
+	return archive_read_support_filter_lrzip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_lz4(void)
+{
+	return archive_read_support_filter_lz4(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_lzip(void)
+{
+	return archive_read_support_filter_lzip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_lzma(void)
+{
+	return archive_read_support_filter_lzma(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_lzop(void)
+{
+	return archive_read_support_filter_lzop(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_none(void)
+{
+	return archive_read_support_filter_none(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_rpm(void)
+{
+	return archive_read_support_filter_rpm(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_uu(void)
+{
+	return archive_read_support_filter_uu(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_filter_xz(void)
+{
+	return archive_read_support_filter_xz(m_ptArchive);
+}
+
+
+
 int ArchiveRead::support_format_all(void)
 {
 	return archive_read_support_format_all(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_7zip(void)
+{
+	return archive_read_support_format_7zip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_ar(void)
+{
+	return archive_read_support_format_ar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_by_code(int iCode)
+{
+	return archive_read_support_format_by_code(m_ptArchive, iCode);
+}
+
+
+
+int ArchiveRead::support_format_cab(void)
+{
+	return archive_read_support_format_cab(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_cpio(void)
+{
+	return archive_read_support_format_cpio(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_empty(void)
+{
+	return archive_read_support_format_empty(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_gnutar(void)
+{
+	return archive_read_support_format_gnutar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_iso9660(void)
+{
+	return archive_read_support_format_iso9660(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_lha(void)
+{
+	return archive_read_support_format_lha(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_mtree(void)
+{
+	return archive_read_support_format_mtree(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_rar(void)
+{
+	return archive_read_support_format_rar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_raw(void)
+{
+	return archive_read_support_format_raw(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_tar(void)
+{
+	return archive_read_support_format_tar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_warc(void)
+{
+	return archive_read_support_format_warc(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_xar(void)
+{
+	return archive_read_support_format_xar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_zip(void)
+{
+	return archive_read_support_format_zip(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_zip_streamable(void)
+{
+	return archive_read_support_format_zip_streamable(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_zip_seekable(void)
+{
+	return archive_read_support_format_zip_seekable(m_ptArchive);
 }
 
 

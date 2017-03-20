@@ -65,4 +65,14 @@
 %ignore ArchiveRead::iterator_next_header;
 %ignore ArchiveRead::iterator_read_data;
 
+%rename("%(regex:/_(ARCHIVE_FILTER_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_FORMAT_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_READ_FORMAT_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_EXTRACT_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_READDISK_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_MATCH_.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(AE_IF.*)/\\1/)s", %$isenumitem) "";
+%rename("%(regex:/_(ARCHIVE_ENTRY_ACL_.*)/\\1/)s", %$isenumitem) "";
+
+
 %include "wrapper.h"
