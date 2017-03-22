@@ -347,86 +347,39 @@ public:
 	int error_errno(void);
 	const char* error_string(void);
 
+	int file_count(void);
+
+	int filter_count(void);
+	int64_t filter_bytes(int iFilterNumber);
+	int filter_code(int iFilterNumber);
+	const char *filter_name(int iFilterNumber);
+
+#ifndef SWIG
+	struct archive *_get_raw(void);
+#endif
+
 protected:
 	struct archive *m_ptArchive;
 };
 
 
 
-class ArchiveRead : public Archive
+class ArchiveWriteCommon : public Archive
 {
+protected:
+	ArchiveWriteCommon(void);
+	~ArchiveWriteCommon(void);
+
 public:
-	ArchiveRead(void);
-	~ArchiveRead(void);
-
-	int support_filter_all(void);
-	int support_filter_bzip2(void);
-	int support_filter_compress(void);
-	int support_filter_gzip(void);
-	int support_filter_grzip(void);
-	int support_filter_lrzip(void);
-	int support_filter_lz4(void);
-	int support_filter_lzip(void);
-	int support_filter_lzma(void);
-	int support_filter_lzop(void);
-	int support_filter_none(void);
-#if 0
-	int support_filter_program(const char *command);
-	int support_filter_program_signature(const char * /* cmd */, const void * /* match */, size_t);
-#endif
-	int support_filter_rpm(void);
-	int support_filter_uu(void);
-	int support_filter_xz(void);
-
-	int support_format_all(void);
-	int support_format_7zip(void);
-	int support_format_ar(void);
-	int support_format_by_code(int);
-	int support_format_cab(void);
-	int support_format_cpio(void);
-	int support_format_empty(void);
-	int support_format_gnutar(void);
-	int support_format_iso9660(void);
-	int support_format_lha(void);
-	int support_format_mtree(void);
-	int support_format_rar(void);
-	int support_format_raw(void);
-	int support_format_tar(void);
-	int support_format_warc(void);
-	int support_format_xar(void);
-	int support_format_zip(void);
-	int support_format_zip_streamable(void);
-	int support_format_zip_seekable(void);
-
-	int archive_read_set_format(int);
-	int archive_read_append_filter(int);
-#if 0
-	int archive_read_append_filter_program(const char *);
-	int archive_read_append_filter_program_signature(const char *, const void * /* match */, size_t);
-#endif
-
-	int archive_read_set_format_option(const char *m, const char *o, const char *v);
-	int archive_read_set_filter_option(const char *m, const char *o, const char *v);
-	int archive_read_set_option(const char *m, const char *o, const char *v);
-	int archive_read_set_options(const char *opts);
-
-	int open_filename(const char *_filename, size_t _block_size);
-
-	ArchiveEntry *next_header(void);
-	void iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry);
-
-	void read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT);
-	void iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT);
-
-	int data_skip(void);
-
-	static int iterator_next_header(lua_State *ptLuaState);
-	static int iterator_read_data(lua_State *ptLuaState);
+	int write_header(ArchiveEntry *ptEntry);
+	int write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN);
+	int finish_entry(void);
+	int close(void);
 };
 
 
 
-class ArchiveWrite : public Archive
+class ArchiveWrite : public ArchiveWriteCommon
 {
 public:
 	ArchiveWrite(void);
@@ -478,11 +431,129 @@ public:
 
 	int open_filename(const char *_file);
 	int open_filename_w(const wchar_t *_file);
+};
 
-	int write_header(ArchiveEntry *ptEntry);
-	int write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN);
-	int finish_entry(void);
+
+
+class ArchiveWriteDisk : public ArchiveWriteCommon
+{
+public:
+	ArchiveWriteDisk(void);
+	~ArchiveWriteDisk(void);
+
+	int set_options(int flags);
+	int set_standard_lookup(void);
+};
+
+
+
+class ArchiveReadCommon : public Archive
+{
+protected:
+	ArchiveReadCommon(void);
+	~ArchiveReadCommon(void);
+
+public:
+	ArchiveEntry *next_header(void);
+	void iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry);
+
+	void read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT);
+	void iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT);
+
+	int data_skip(void);
+
+	static int iterator_next_header(lua_State *ptLuaState);
+	static int iterator_read_data(lua_State *ptLuaState);
+
 	int close(void);
+};
+
+
+
+class ArchiveRead : public ArchiveReadCommon
+{
+public:
+	ArchiveRead(void);
+	~ArchiveRead(void);
+
+	int support_filter_all(void);
+	int support_filter_bzip2(void);
+	int support_filter_compress(void);
+	int support_filter_gzip(void);
+	int support_filter_grzip(void);
+	int support_filter_lrzip(void);
+	int support_filter_lz4(void);
+	int support_filter_lzip(void);
+	int support_filter_lzma(void);
+	int support_filter_lzop(void);
+	int support_filter_none(void);
+	int support_filter_rpm(void);
+	int support_filter_uu(void);
+	int support_filter_xz(void);
+
+	int support_format_all(void);
+	int support_format_7zip(void);
+	int support_format_ar(void);
+	int support_format_by_code(int);
+	int support_format_cab(void);
+	int support_format_cpio(void);
+	int support_format_empty(void);
+	int support_format_gnutar(void);
+	int support_format_iso9660(void);
+	int support_format_lha(void);
+	int support_format_mtree(void);
+	int support_format_rar(void);
+	int support_format_raw(void);
+	int support_format_tar(void);
+	int support_format_warc(void);
+	int support_format_xar(void);
+	int support_format_zip(void);
+	int support_format_zip_streamable(void);
+	int support_format_zip_seekable(void);
+
+	int set_format(int);
+	int append_filter(int);
+
+	int set_format_option(const char *m, const char *o, const char *v);
+	int set_filter_option(const char *m, const char *o, const char *v);
+	int set_option(const char *m, const char *o, const char *v);
+	int set_options(const char *opts);
+
+	int open_filename(const char *_filename, size_t _block_size);
+
+
+	int extract(ArchiveEntry *ptEntry, int flags);
+	int extract2(ArchiveEntry *ptEntry, ArchiveWrite *ptDestArchive);
+};
+
+
+
+class ArchiveReadDisk : public ArchiveReadCommon
+{
+public:
+	ArchiveReadDisk(void);
+	~ArchiveReadDisk(void);
+
+	int set_symlink_logical(void);
+	int set_symlink_physical(void);
+	int set_symlink_hybrid(void);
+
+	const char *gname(int64_t);
+	const char *uname(int64_t);
+
+	int set_standard_lookup(void);
+
+	int open(const char *);
+	int open_w(const wchar_t *);
+
+	int descend(void);
+	int can_descend(void);
+	int current_filesystem(void);
+	int current_filesystem_is_synthetic(void);
+	int current_filesystem_is_remote(void);
+	int set_atime_restored(void);
+
+	int set_behavior(int iFlags);
 };
 
 

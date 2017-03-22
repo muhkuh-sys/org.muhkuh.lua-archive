@@ -61,9 +61,9 @@
 %}
 
 
-%newobject ArchiveRead::next_header;
-%ignore ArchiveRead::iterator_next_header;
-%ignore ArchiveRead::iterator_read_data;
+%newobject ArchiveReadCommon::next_header;
+%ignore ArchiveReadCommon::iterator_next_header;
+%ignore ArchiveReadCommon::iterator_read_data;
 
 %rename("%(regex:/_(ARCHIVE_FILTER_.*)/\\1/)s", %$isenumitem) "";
 %rename("%(regex:/_(ARCHIVE_FORMAT_.*)/\\1/)s", %$isenumitem) "";

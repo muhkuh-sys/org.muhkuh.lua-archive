@@ -71,7 +71,6 @@ ArchiveEntry::ArchiveEntry(struct archive_entry *ptArchiveEntry)
 
 ArchiveEntry::~ArchiveEntry(void)
 {
-	printf("~archive_entry\n");
 	if( m_ptArchiveEntry!=NULL )
 	{
 		archive_entry_free(m_ptArchiveEntry);
@@ -845,11 +844,249 @@ const char* Archive::error_string(void)
 
 
 
+int Archive::file_count(void)
+{
+	return archive_file_count(m_ptArchive);
+}
+
+
+
+int Archive::filter_count(void)
+{
+	return archive_filter_count(m_ptArchive);
+}
+
+
+
+int64_t Archive::filter_bytes(int iFilterNumber)
+{
+	return archive_filter_bytes(m_ptArchive, iFilterNumber);
+}
+
+
+
+int Archive::filter_code(int iFilterNumber)
+{
+	return archive_filter_code(m_ptArchive, iFilterNumber);
+}
+
+
+
+const char *Archive::filter_name(int iFilterNumber)
+{
+	return archive_filter_name(m_ptArchive, iFilterNumber);
+}
+
+
+
+struct archive *Archive::_get_raw(void)
+{
+	return m_ptArchive;
+}
+
+
+/*--------------------------------------------------------------------------*/
+
+
+ArchiveReadCommon::ArchiveReadCommon(void)
+ : Archive()
+{
+}
+
+
+
+ArchiveReadCommon::~ArchiveReadCommon(void)
+{
+}
+
+
+
+ArchiveEntry *ArchiveReadCommon::next_header(void)
+{
+	int iResult;
+	struct archive_entry* ptArchiveEntryStruct;
+	ArchiveEntry *ptArchiveEntryClass;
+
+
+	ptArchiveEntryClass = NULL;
+
+	iResult = archive_read_next_header(m_ptArchive, &ptArchiveEntryStruct);
+	if( iResult==ARCHIVE_OK )
+	{
+		ptArchiveEntryClass = new ArchiveEntry(ptArchiveEntryStruct);
+	}
+
+	return ptArchiveEntryClass;
+}
+
+
+
+void ArchiveReadCommon::iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry)
+{
+	/* Push the pointer to this instance of the "Archive" class as the first up-value. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
+	/* Push the type of the result as the second up-value. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)p_ArchiveEntry);
+	/* Create a C closure with 2 arguments. */
+	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_next_header), 2);
+
+	/* NOTE: This function does not return the produced number of
+	 *       arguments. This is done in the SWIG wrapper.
+	 */
+}
+
+
+
+int ArchiveReadCommon::iterator_next_header(lua_State *ptLuaState)
+{
+	int iUpvalueIndex;
+	void *pvUpvalue;
+	ArchiveRead *ptThis;
+	swig_type_info *ptTypeInfo;
+	ArchiveEntry *ptArchiveEntry;
+
+
+	/* Get the first up-value. */
+	iUpvalueIndex = lua_upvalueindex(1);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	/* Cast the up-value to a class pointer. */
+	ptThis = (ArchiveRead*)pvUpvalue;
+
+	/* Get the second up-value. */
+	iUpvalueIndex = lua_upvalueindex(2);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	ptTypeInfo = (swig_type_info*)pvUpvalue;
+
+	/* Get the next archive entry. */
+	ptArchiveEntry = ptThis->next_header();
+	/* Push the class on the LUA stack. */
+	if( ptArchiveEntry==NULL )
+	{
+		lua_pushnil(ptLuaState);
+	}
+	else
+	{
+		/* Create a new pointer object from the archive entry and transfer the ownership to LUA (this is the last parameter). */
+		SWIG_NewPointerObj(ptLuaState, ptArchiveEntry, ptTypeInfo, 1);
+	}
+
+	return 1;
+}
+
+
+
+int ArchiveReadCommon::data_skip(void)
+{
+	return archive_read_data_skip(m_ptArchive);
+}
+
+
+
+void ArchiveReadCommon::read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT)
+{
+	la_ssize_t sResult;
+	char *pcBuffer;
+	size_t sizRead;
+
+
+	/* No data read yet. */
+	sizRead = 0;
+
+	/* Allocate the buffer. */
+	pcBuffer = (char*)malloc(sizChunk);
+	if( pcBuffer!=NULL )
+	{
+		sResult = archive_read_data(m_ptArchive, pcBuffer, sizChunk);
+		if( sResult<0 )
+		{
+			/* An error occured, discard the data. */
+			free(pcBuffer);
+			pcBuffer = NULL;
+		}
+		else
+		{
+			sizRead = (size_t)sResult;
+		}
+	}
+
+	*ppcBUFFER_OUT = pcBuffer;
+	*psizBUFFER_OUT = sizRead;
+}
+
+
+
+void ArchiveReadCommon::iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT)
+{
+	lua_Number tNumber;
+
+
+	/* Push the pointer to this instance of the "Archive" class as the first upvalue. */
+	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
+	/* Push the chunk size as the second upvalue. */
+	tNumber = (lua_Number)sizChunk;
+	lua_pushnumber(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, tNumber);
+	/* Create a C closure with 2 arguments. */
+	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_read_data), 2);
+
+	/* NOTE: This function does not return the produced number of
+	 *       arguments. This is done in the SWIG wrapper.
+	 */
+}
+
+
+
+int ArchiveReadCommon::iterator_read_data(lua_State *ptLuaState)
+{
+	int iUpvalueIndex;
+	void *pvUpvalue;
+	lua_Number tNumber;
+	ArchiveRead *ptThis;
+	size_t sizChunk;
+	char *pcBuffer;
+	size_t sizBuffer;
+
+
+	/* Get the first up-value. */
+	iUpvalueIndex = lua_upvalueindex(1);
+	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
+	/* Cast the up-value to a class pointer. */
+	ptThis = (ArchiveRead*)pvUpvalue;
+
+	/* Get the second up-value. */
+	iUpvalueIndex = lua_upvalueindex(2);
+	tNumber = lua_tonumber(ptLuaState, iUpvalueIndex);
+	sizChunk = (size_t)tNumber;
+
+	/* Get the next data chunk. */
+	ptThis->read_data(sizChunk, &pcBuffer, &sizBuffer);
+	/* Push the class on the LUA stack. */
+	if( pcBuffer!=NULL && sizBuffer!=0 )
+	{
+		lua_pushlstring(ptLuaState, pcBuffer, sizBuffer);
+	}
+	else
+	{
+		lua_pushnil(ptLuaState);
+	}
+
+	return 1;
+}
+
+
+
+int ArchiveReadCommon::close(void)
+{
+	archive_read_close(m_ptArchive);
+}
+
+
+
+
 /*--------------------------------------------------------------------------*/
 
 
 ArchiveRead::ArchiveRead(void)
- : Archive()
+ : ArchiveReadCommon()
 {
 	/* Allocate a new archive structure. */
 	m_ptArchive = archive_read_new();
@@ -861,8 +1098,6 @@ ArchiveRead::~ArchiveRead(void)
 {
 	int iResult;
 
-
-	printf("~ArchiveRead\n");
 
 	if( m_ptArchive!=NULL )
 	{
@@ -1115,184 +1350,272 @@ int ArchiveRead::open_filename(const char *_filename, size_t _block_size)
 
 
 
-ArchiveEntry *ArchiveRead::next_header(void)
+int ArchiveRead::set_format(int iFormat)
+{
+	return archive_read_set_format(m_ptArchive, iFormat);
+}
+
+
+
+int ArchiveRead::append_filter(int iFilter)
+{
+	return archive_read_append_filter(m_ptArchive, iFilter);
+}
+
+
+
+int ArchiveRead::set_format_option(const char *m, const char *o, const char *v)
+{
+	return archive_read_set_format_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveRead::set_filter_option(const char *m, const char *o, const char *v)
+{
+	return archive_read_set_filter_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveRead::set_option(const char *m, const char *o, const char *v)
+{
+	return archive_read_set_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveRead::set_options(const char *opts)
+{
+	return archive_read_set_options(m_ptArchive, opts);
+}
+
+
+
+int ArchiveRead::extract(ArchiveEntry *ptEntry, int iFlags)
+{
+	return archive_read_extract(m_ptArchive, ptEntry->_get_raw(), iFlags);
+}
+
+
+
+int ArchiveRead::extract2(ArchiveEntry *ptEntry, ArchiveWrite *ptDestArchive)
+{
+	return archive_read_extract2(m_ptArchive, ptEntry->_get_raw(), ptDestArchive->_get_raw());
+}
+
+
+/*--------------------------------------------------------------------------*/
+
+
+ArchiveReadDisk::ArchiveReadDisk(void)
+ : ArchiveReadCommon()
+{
+	m_ptArchive = archive_read_disk_new();
+}
+
+
+
+ArchiveReadDisk::~ArchiveReadDisk(void)
 {
 	int iResult;
-	struct archive_entry* ptArchiveEntryStruct;
-	ArchiveEntry *ptArchiveEntryClass;
 
 
-	ptArchiveEntryClass = NULL;
-
-	iResult = archive_read_next_header(m_ptArchive, &ptArchiveEntryStruct);
-	if( iResult==ARCHIVE_OK )
+	if( m_ptArchive!=NULL )
 	{
-		ptArchiveEntryClass = new ArchiveEntry(ptArchiveEntryStruct);
+		/* NOTE: the ReadDisk object uses the "free" function from the "Read" object. */
+		iResult = archive_read_free(m_ptArchive);
+		if( iResult!=ARCHIVE_OK )
+		{
+			printf("Failed to free the archive structure!\n");
+		}
+		m_ptArchive = NULL;
 	}
-
-	return ptArchiveEntryClass;
 }
 
 
 
-void ArchiveRead::iter_header(lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, swig_type_info *p_ArchiveEntry)
+int ArchiveReadDisk::set_symlink_logical(void)
 {
-	/* Push the pointer to this instance of the "Archive" class as the first up-value. */
-	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
-	/* Push the type of the result as the second up-value. */
-	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)p_ArchiveEntry);
-	/* Create a C closure with 2 arguments. */
-	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_next_header), 2);
-
-	/* NOTE: This function does not return the produced number of
-	 *       arguments. This is done in the SWIG wrapper.
-	 */
+	return archive_read_disk_set_symlink_logical(m_ptArchive);
 }
 
 
 
-int ArchiveRead::iterator_next_header(lua_State *ptLuaState)
+int ArchiveReadDisk::set_symlink_physical(void)
 {
-	int iUpvalueIndex;
-	void *pvUpvalue;
-	ArchiveRead *ptThis;
-	swig_type_info *ptTypeInfo;
-	ArchiveEntry *ptArchiveEntry;
-
-
-	/* Get the first up-value. */
-	iUpvalueIndex = lua_upvalueindex(1);
-	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
-	/* Cast the up-value to a class pointer. */
-	ptThis = (ArchiveRead*)pvUpvalue;
-
-	/* Get the second up-value. */
-	iUpvalueIndex = lua_upvalueindex(2);
-	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
-	ptTypeInfo = (swig_type_info*)pvUpvalue;
-
-	/* Get the next archive entry. */
-	ptArchiveEntry = ptThis->next_header();
-	/* Push the class on the LUA stack. */
-	if( ptArchiveEntry==NULL )
-	{
-		lua_pushnil(ptLuaState);
-	}
-	else
-	{
-		/* Create a new pointer object from the archive entry and transfer the ownership to LUA (this is the last parameter). */
-		SWIG_NewPointerObj(ptLuaState, ptArchiveEntry, ptTypeInfo, 1);
-	}
-
-	return 1;
+	return archive_read_disk_set_symlink_physical(m_ptArchive);
 }
 
 
 
-int ArchiveRead::data_skip(void)
+int ArchiveReadDisk::set_symlink_hybrid(void)
 {
-	return archive_read_data_skip(m_ptArchive);
+	return archive_read_disk_set_symlink_hybrid(m_ptArchive);
 }
 
 
 
-void ArchiveRead::read_data(size_t sizChunk, char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT)
+const char *ArchiveReadDisk::gname(int64_t iGID)
 {
+	return archive_read_disk_gname(m_ptArchive, iGID);
+}
+
+
+
+const char *ArchiveReadDisk::uname(int64_t iUID)
+{
+	return archive_read_disk_uname(m_ptArchive, iUID);
+}
+
+
+
+int ArchiveReadDisk::set_standard_lookup(void)
+{
+	return archive_read_disk_set_standard_lookup(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::open(const char *pcFilename)
+{
+	return archive_read_disk_open(m_ptArchive, pcFilename);
+}
+
+
+
+int ArchiveReadDisk::open_w(const wchar_t *pcFilename)
+{
+	return archive_read_disk_open_w(m_ptArchive, pcFilename);
+}
+
+
+
+int ArchiveReadDisk::descend(void)
+{
+	return archive_read_disk_descend(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::can_descend(void)
+{
+	return archive_read_disk_can_descend(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::current_filesystem(void)
+{
+	return archive_read_disk_current_filesystem(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::current_filesystem_is_synthetic(void)
+{
+	return archive_read_disk_current_filesystem_is_synthetic(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::current_filesystem_is_remote(void)
+{
+	return archive_read_disk_current_filesystem_is_remote(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::set_atime_restored(void)
+{
+	return archive_read_disk_set_atime_restored(m_ptArchive);
+}
+
+
+
+int ArchiveReadDisk::set_behavior(int iFlags)
+{
+	return archive_read_disk_set_behavior(m_ptArchive, iFlags);
+}
+
+
+/*--------------------------------------------------------------------------*/
+
+
+ArchiveWriteCommon::ArchiveWriteCommon(void)
+ : Archive()
+{
+}
+
+
+
+ArchiveWriteCommon::~ArchiveWriteCommon(void)
+{
+}
+
+
+
+int ArchiveWriteCommon::write_header(ArchiveEntry *ptEntry)
+{
+	struct archive_entry *ptArchiveEntryStruct;
+
+
+	/* Get the archive entry structure from the class. */
+	ptArchiveEntryStruct = ptEntry->_get_raw();
+	return archive_write_header(m_ptArchive, ptArchiveEntryStruct);
+}
+
+
+
+int ArchiveWriteCommon::write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN)
+{
+	int iResult;
 	la_ssize_t sResult;
-	char *pcBuffer;
-	size_t sizRead;
+	const char *pcCnt;
+	size_t sizLeft;
 
 
-	/* No data read yet. */
-	sizRead = 0;
-
-	/* Allocate the buffer. */
-	pcBuffer = (char*)malloc(sizChunk);
-	if( pcBuffer!=NULL )
+	iResult = 0;
+	pcCnt = pcBUFFER_IN;
+	sizLeft = sizBUFFER_IN;
+	while( sizLeft!=0 )
 	{
-		sResult = archive_read_data(m_ptArchive, pcBuffer, sizChunk);
+		sResult = archive_write_data(m_ptArchive, pcCnt, sizLeft);
 		if( sResult<0 )
 		{
-			/* An error occured, discard the data. */
-			free(pcBuffer);
-			pcBuffer = NULL;
+			iResult = sResult;
+			break;
 		}
 		else
 		{
-			sizRead = (size_t)sResult;
+			pcCnt += sResult;
+			sizLeft -= sResult;
 		}
 	}
 
-	*ppcBUFFER_OUT = pcBuffer;
-	*psizBUFFER_OUT = sizRead;
+	return iResult;
 }
 
 
 
-void ArchiveRead::iter_data(size_t sizChunk, lua_State *MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT)
+int ArchiveWriteCommon::finish_entry(void)
 {
-	lua_Number tNumber;
-
-
-	/* Push the pointer to this instance of the "Archive" class as the first upvalue. */
-	lua_pushlightuserdata(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, (void*)this);
-	/* Push the chunk size as the second upvalue. */
-	tNumber = (lua_Number)sizChunk;
-	lua_pushnumber(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, tNumber);
-	/* Create a C closure with 2 arguments. */
-	lua_pushcclosure(MUHKUH_SWIG_OUTPUT_CUSTOM_OBJECT, &(ArchiveRead::iterator_read_data), 2);
-
-	/* NOTE: This function does not return the produced number of
-	 *       arguments. This is done in the SWIG wrapper.
-	 */
+	return archive_write_finish_entry(m_ptArchive);
 }
 
 
 
-int ArchiveRead::iterator_read_data(lua_State *ptLuaState)
+int ArchiveWriteCommon::close(void)
 {
-	int iUpvalueIndex;
-	void *pvUpvalue;
-	lua_Number tNumber;
-	ArchiveRead *ptThis;
-	size_t sizChunk;
-	char *pcBuffer;
-	size_t sizBuffer;
-
-
-	/* Get the first up-value. */
-	iUpvalueIndex = lua_upvalueindex(1);
-	pvUpvalue = lua_touserdata(ptLuaState, iUpvalueIndex);
-	/* Cast the up-value to a class pointer. */
-	ptThis = (ArchiveRead*)pvUpvalue;
-
-	/* Get the second up-value. */
-	iUpvalueIndex = lua_upvalueindex(2);
-	tNumber = lua_tonumber(ptLuaState, iUpvalueIndex);
-	sizChunk = (size_t)tNumber;
-
-	/* Get the next data chunk. */
-	ptThis->read_data(sizChunk, &pcBuffer, &sizBuffer);
-	/* Push the class on the LUA stack. */
-	if( pcBuffer!=NULL && sizBuffer!=0 )
-	{
-		lua_pushlstring(ptLuaState, pcBuffer, sizBuffer);
-	}
-	else
-	{
-		lua_pushnil(ptLuaState);
-	}
-
-	return 1;
+	return archive_write_close(m_ptArchive);
 }
-
 
 
 /*--------------------------------------------------------------------------*/
 
 
 ArchiveWrite::ArchiveWrite(void)
- : Archive()
+ : ArchiveWriteCommon()
 {
 	/* Allocate a new archive structure. */
 	m_ptArchive = archive_write_new();
@@ -1304,8 +1627,6 @@ ArchiveWrite::~ArchiveWrite(void)
 {
 	int iResult;
 
-
-	printf("~ArchiveWrite\n");
 
 	if( m_ptArchive!=NULL )
 	{
@@ -1620,58 +1941,45 @@ int ArchiveWrite::open_filename_w(const wchar_t *_file)
 }
 
 
+/*--------------------------------------------------------------------------*/
 
-int ArchiveWrite::write_header(ArchiveEntry *ptEntry)
+
+ArchiveWriteDisk::ArchiveWriteDisk(void)
+ : ArchiveWriteCommon()
 {
-	struct archive_entry *ptArchiveEntryStruct;
-
-
-	/* Get the archive entry structure from the class. */
-	ptArchiveEntryStruct = ptEntry->_get_raw();
-	return archive_write_header(m_ptArchive, ptArchiveEntryStruct);
+	/* Allocate a new archive structure. */
+	m_ptArchive = archive_write_disk_new();
 }
 
 
 
-int ArchiveWrite::write_data(const char *pcBUFFER_IN, size_t sizBUFFER_IN)
+ArchiveWriteDisk::~ArchiveWriteDisk(void)
 {
 	int iResult;
-	la_ssize_t sResult;
-	const char *pcCnt;
-	size_t sizLeft;
 
 
-	iResult = 0;
-	pcCnt = pcBUFFER_IN;
-	sizLeft = sizBUFFER_IN;
-	while( sizLeft!=0 )
+	if( m_ptArchive!=NULL )
 	{
-		sResult = archive_write_data(m_ptArchive, pcCnt, sizLeft);
-		if( sResult<0 )
+		/* NOTE: the WriteDisk object uses the "free" function from the "Write" object. */
+		iResult = archive_write_free(m_ptArchive);
+		if( iResult!=ARCHIVE_OK )
 		{
-			iResult = sResult;
-			break;
+			printf("Failed to free the archive structure!\n");
 		}
-		else
-		{
-			pcCnt += sResult;
-			sizLeft -= sResult;
-		}
+		m_ptArchive = NULL;
 	}
-
-	return iResult;
 }
 
 
 
-int ArchiveWrite::finish_entry(void)
+int ArchiveWriteDisk::set_options(int iFlags)
 {
-	return archive_write_finish_entry(m_ptArchive);
+	return archive_write_disk_set_options(m_ptArchive, iFlags);
 }
 
 
 
-int ArchiveWrite::close(void)
+int ArchiveWriteDisk::set_standard_lookup(void)
 {
-	return archive_write_close(m_ptArchive);
+	return archive_write_disk_set_standard_lookup(m_ptArchive);
 }
