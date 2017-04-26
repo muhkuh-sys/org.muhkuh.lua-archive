@@ -1,7 +1,7 @@
 diff -uNr libarchive-3.3.1_org/CMakeLists.txt libarchive-3.3.1_patched/CMakeLists.txt
 --- libarchive-3.3.1_org/CMakeLists.txt	2017-02-25 20:31:44.000000000 +0100
-+++ libarchive-3.3.1_patched/CMakeLists.txt	2017-03-22 11:37:45.809738059 +0100
-@@ -386,7 +386,10 @@
++++ libarchive-3.3.1_patched/CMakeLists.txt	2017-03-22 12:01:04.550107461 +0100
+@@ -386,7 +386,11 @@
  # Find ZLIB
  #
  IF(ENABLE_ZLIB)
@@ -9,6 +9,7 @@ diff -uNr libarchive-3.3.1_org/CMakeLists.txt libarchive-3.3.1_patched/CMakeList
 +  FIND_PACKAGE(net.zlib-zlib REQUIRED CONFIG)
 +  GET_TARGET_PROPERTY(ZLIB_LIBRARIES net.zlib-zlib::zlibstatic LOCATION)
 +  SET(ZLIB_INCLUDE_DIR net.zlib-zlib_INCLUDE_DIR)
++  SET(ZLIB_FOUND TRUE)
 +  MESSAGE("Found ZLIB: ${ZLIB_LIBRARIES} (found version ${net.zlib-zlib_VERSION})")
  ELSE()
    SET(ZLIB_FOUND FALSE) # Override cached value
