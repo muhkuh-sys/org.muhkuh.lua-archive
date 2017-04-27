@@ -8,7 +8,7 @@ diff -uNr libarchive-3.3.1_org/CMakeLists.txt libarchive-3.3.1_patched/CMakeList
 -  FIND_PACKAGE(ZLIB)
 +  FIND_PACKAGE(net.zlib-zlib REQUIRED CONFIG)
 +  GET_TARGET_PROPERTY(ZLIB_LIBRARIES net.zlib-zlib::zlibstatic LOCATION)
-+  SET(ZLIB_INCLUDE_DIR net.zlib-zlib_INCLUDE_DIR)
++  SET(ZLIB_INCLUDE_DIR ${net.zlib-zlib_INCLUDE_DIR})
 +  SET(ZLIB_FOUND TRUE)
 +  MESSAGE("Found ZLIB: ${ZLIB_LIBRARIES} (found version ${net.zlib-zlib_VERSION})")
  ELSE()
