@@ -6,16 +6,16 @@ set -e
 # Build all artefacts.
 #
 pushd build
-rm -rf com.github.keplerproject-lua5.1-luafilesystem
-rm -rf com.github.keplerproject-lua5.2-luafilesystem
-rm -rf com.github.keplerproject-lua5.3-luafilesystem
+rm -rf org.muhkuh.lua-lua5.1-archive
+rm -rf org.muhkuh.lua-lua5.2-archive
+rm -rf org.muhkuh.lua-lua5.3-archive
 rm -rf lua5.1
 rm -rf lua5.2
 rm -rf lua5.3
 
-mkdir com.github.keplerproject-lua5.1-luafilesystem
-mkdir com.github.keplerproject-lua5.2-luafilesystem
-mkdir com.github.keplerproject-lua5.3-luafilesystem
+mkdir org.muhkuh.lua-lua5.1-archive
+mkdir org.muhkuh.lua-lua5.2-archive
+mkdir org.muhkuh.lua-lua5.3-archive
 mkdir -p lua5.1/windows_x86
 mkdir -p lua5.1/windows_x86_64
 mkdir -p lua5.1/ubuntu_1204_x86
@@ -92,20 +92,26 @@ tar --extract --directory lua5.3/ubuntu_1610_x86_64 --file build_ubuntu_1610_x86
 popd
 
 
-pushd build/com.github.keplerproject-lua5.1-luafilesystem
-cmake -DCMAKE_INSTALL_PREFIX="" ../../luafilesystem/installer/lua5.1
+pushd build/org.muhkuh.lua-lua5.1-archive
+cmake -DCMAKE_INSTALL_PREFIX="" ../../lua-archive/installer/lua5.1
 make
 make package
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.1-archive-*.xml
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.1-archive-*.tar.xz
 popd
 
-pushd build/com.github.keplerproject-lua5.2-luafilesystem
-cmake -DCMAKE_INSTALL_PREFIX="" ../../luafilesystem/installer/lua5.2
+pushd build/org.muhkuh.lua-lua5.2-archive
+cmake -DCMAKE_INSTALL_PREFIX="" ../../lua-archive/installer/lua5.2
 make
 make package
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.2-archive-*.xml
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.2-archive-*.tar.xz
 popd
 
-pushd build/com.github.keplerproject-lua5.3-luafilesystem
-cmake -DCMAKE_INSTALL_PREFIX="" ../../luafilesystem/installer/lua5.3
+pushd build/org.muhkuh.lua-lua5.3-archive
+cmake -DCMAKE_INSTALL_PREFIX="" ../../lua-archive/installer/lua5.3
 make
 make package
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.3-archive-*.xml
+python2.7 ../../cmake/tools/generate_hash.py targets/jonchki/repository/org/muhkuh/lua/archive/*/lua5.3-archive-*.tar.xz
 popd
