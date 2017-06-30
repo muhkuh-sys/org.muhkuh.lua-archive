@@ -1,0 +1,36 @@
+<jonchkicfg>
+	<repositories>
+		<!-- The nexus repository is Hilscher internal. -->
+		<!-- NOTE: Nexus does not support modules. Replace them with the artifact. -->
+		<repository id="nexus" type="url" cacheable="true">
+			<root>http://nexus.netx01.hilscher.local/content/repositories/jonchki</root>
+			<versions>[group]/[artifact]</versions>
+			<config>[group]/[artifact]/[version]/[artifact]-[version].[extension]</config>
+			<artifact>[group]/[artifact]/[version]/[artifact]-[version].[extension]</artifact>
+		</repository>
+
+		<!-- The github repository contains stable artifacts. -->
+		<repository id="github" type="url" cacheable="true">
+			<root>https://github.com/muhkuh-sys</root>
+			<versions>[dotgroup]-[module]/releases</versions>
+			<config>[dotgroup]-[module]/releases/download/v[version]/[artifact]-[version].[extension]</config>
+			<artifact>[dotgroup]-[module]/releases/download/v[version]/[artifact]-[version].[extension]</artifact>
+		</repository>
+
+		<!-- The bintray repository contains stable artifacts. -->
+		<repository id="bintray" type="url" cacheable="true">
+			<root>https://dl.bintray.com/muhkuh/jonchki</root>
+			<versions>[group]/[module]</versions>
+			<config>[group]/[module]/[version]/[artifact]-[version].[extension]</config>
+			<artifact>[group]/[module]/[version]/[artifact]-[version].[extension]</artifact>
+		</repository>
+
+		<!-- The sourceforge repository contains stable artifacts. -->
+		<repository id="sourceforge" type="url" cacheable="true">
+			<root>https://sourceforge.net/projects/muhkuh/files/jonchki</root>
+			<versions>[group]/[module]</versions>
+			<config>[group]/[module]/[version]/[artifact]-[version].[extension]/download</config>
+			<artifact>[group]/[module]/[version]/[artifact]-[version].[extension]/download</artifact>
+		</repository>
+	</repositories>
+</jonchkicfg>
