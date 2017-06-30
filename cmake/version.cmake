@@ -7,7 +7,9 @@
 # For now we know that this project uses GIT.
 FIND_PACKAGE(Git)
 IF(GIT_FOUND)
+	# Run this command in the project root folder. The build folder might be somewhere else.
 	EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} describe --abbrev=12 --always --dirty=+
+	                WORKING_DIRECTORY ${CMAKE_HOME_DIRECTORY}
 	                RESULT_VARIABLE VCS_VERSION_RESULT
 	                OUTPUT_VARIABLE VCS_VERSION_OUTPUT)
 	
