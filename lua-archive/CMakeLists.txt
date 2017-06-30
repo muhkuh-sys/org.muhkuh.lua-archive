@@ -4,7 +4,7 @@ PROJECT("lua-archive")
 
 INCLUDE(ExternalProject)
 
-SET(VERSION_EXTERNAL "0.0.0")
+SET(VERSION_EXTERNAL "0.0.1")
 SET(VERSION_PACKAGE  "1")
 SET(PROJECT_VERSION  "${VERSION_EXTERNAL}.${VERSION_PACKAGE}")
 
@@ -12,8 +12,8 @@ SET(PROJECT_VERSION  "${VERSION_EXTERNAL}.${VERSION_PACKAGE}")
 INCLUDE(${CMAKE_HOME_DIRECTORY}/cmake/version.cmake)
 
 # Filter the jonchki configuration.
-CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/lua-archive.xml
-               ${CMAKE_CURRENT_BINARY_DIR}/lua${BUILDCFG_LUA_VERSION}-lua-archive-${PROJECT_VERSION}.xml
+CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/archive.xml
+               ${CMAKE_CURRENT_BINARY_DIR}/lua${BUILDCFG_LUA_VERSION}-archive-${PROJECT_VERSION}.xml
                @ONLY)
 
 
@@ -84,4 +84,6 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 
 	# Write a version file.
 	FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/install/org.muhkuh.lua-archive.version "SET(org.muhkuh.lua-archive_VERSION ${VERSION_EXTERNAL}.${VERSION_PACKAGE})")
+	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/install/org.muhkuh.lua-archive.version
+	        DESTINATION .)
 ENDIF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
