@@ -13,10 +13,15 @@ PRJDIR=`pwd`
 mkdir -p ${PRJDIR}/build
 
 # Start the container and mount the project folder.
-lxc launch mbs-ubuntu-1604-x64 ${CONTAINER} -c security.privileged=true
+lxc init mbs-ubuntu-1604-x64 ${CONTAINER}
 lxc config device add ${CONTAINER} projectDir disk source=${PRJDIR} path=/tmp/work
+lxc start ${CONTAINER}
 sleep 5
-lxc file push /etc/resolv.conf ${CONTAINER}/etc/resolv.conf
+
+# Prepare the build folder.
+lxc exec ${CONTAINER} -- bash -c 'rm -rf /tmp/build'
+lxc exec ${CONTAINER} -- bash -c 'mkdir /tmp/build'
+lxc exec ${CONTAINER} -- bash -c 'mount --bind /tmp/build /tmp/work/build'
 
 # Update the package list to prevent "not found" messages.
 lxc exec ${CONTAINER} -- bash -c 'apt-get update --assume-yes'
@@ -29,9 +34,9 @@ lxc exec ${CONTAINER} -- bash -c 'cd /tmp/work && bash .build03_linux.sh'
 lxc exec ${CONTAINER} -- bash -c 'tar --create --file /tmp/work/build/build_ubuntu_1604_x86_64_lua5.1.tar.gz --gzip --directory /tmp/work/build/linux/lua5.1/install .'
 lxc exec ${CONTAINER} -- bash -c 'tar --create --file /tmp/work/build/build_ubuntu_1604_x86_64_lua5.2.tar.gz --gzip --directory /tmp/work/build/linux/lua5.2/install .'
 lxc exec ${CONTAINER} -- bash -c 'tar --create --file /tmp/work/build/build_ubuntu_1604_x86_64_lua5.3.tar.gz --gzip --directory /tmp/work/build/linux/lua5.3/install .'
-lxc exec ${CONTAINER} -- bash -c 'chown `stat -c %u:%g /tmp/work` /tmp/work/build/build_ubuntu_1604_x86_64_lua5.1.tar.gz'
-lxc exec ${CONTAINER} -- bash -c 'chown `stat -c %u:%g /tmp/work` /tmp/work/build/build_ubuntu_1604_x86_64_lua5.2.tar.gz'
-lxc exec ${CONTAINER} -- bash -c 'chown `stat -c %u:%g /tmp/work` /tmp/work/build/build_ubuntu_1604_x86_64_lua5.3.tar.gz'
+lxc file pull ${CONTAINER}/tmp/work/build/build_ubuntu_1604_x86_64_lua5.1.tar.gz build/
+lxc file pull ${CONTAINER}/tmp/work/build/build_ubuntu_1604_x86_64_lua5.2.tar.gz build/
+lxc file pull ${CONTAINER}/tmp/work/build/build_ubuntu_1604_x86_64_lua5.3.tar.gz build/
 
 # Stop and remove the container.
 lxc stop ${CONTAINER}
