@@ -40,11 +40,11 @@ INSTALL(FILES ${INSTALL_UBUNTU_1404_X86}/lua_plugins/archive.so
 INSTALL(FILES ${INSTALL_UBUNTU_1604_X86}/lua_plugins/archive.so
         DESTINATION ubuntu_1604_x86/lua_plugins)
 
-INSTALL(FILES ${INSTALL_UBUNTU_1610_X86}/lua_plugins/archive.so
-        DESTINATION ubuntu_1610_x86/lua_plugins)
-
 INSTALL(FILES ${INSTALL_UBUNTU_1704_X86}/lua_plugins/archive.so
         DESTINATION ubuntu_1704_x86/lua_plugins)
+
+INSTALL(FILES ${INSTALL_UBUNTU_1710_X86}/lua_plugins/archive.so
+        DESTINATION ubuntu_1710_x86/lua_plugins)
 
 
 #-----------------------------------------------------------------------------
@@ -60,11 +60,11 @@ INSTALL(FILES ${INSTALL_UBUNTU_1404_X86_64}/lua_plugins/archive.so
 INSTALL(FILES ${INSTALL_UBUNTU_1604_X86_64}/lua_plugins/archive.so
         DESTINATION ubuntu_1604_x86_64/lua_plugins)
 
-INSTALL(FILES ${INSTALL_UBUNTU_1610_X86_64}/lua_plugins/archive.so
-        DESTINATION ubuntu_1610_x86_64/lua_plugins)
-
 INSTALL(FILES ${INSTALL_UBUNTU_1704_X86_64}/lua_plugins/archive.so
         DESTINATION ubuntu_1704_x86_64/lua_plugins)
+
+INSTALL(FILES ${INSTALL_UBUNTU_1710_X86_64}/lua_plugins/archive.so
+        DESTINATION ubuntu_1710_x86_64/lua_plugins)
 
 
 #-----------------------------------------------------------------------------
