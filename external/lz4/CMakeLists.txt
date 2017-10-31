@@ -7,7 +7,7 @@ INCLUDE(ExternalProject)
 # Python is used for some test scripts.
 FIND_PACKAGE(PythonInterp 2.7 REQUIRED)
 
-SET(VERSION_EXTERNAL "1.7.5")
+SET(VERSION_EXTERNAL "1.8.0")
 
 
 #----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ LIST(APPEND PRJ_CMAKE_ARGS "-DLZ4_POSITION_INDEPENDENT_LIB=ON")
 ExternalProject_Add(TARGET_lz4
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/lz4-${VERSION_EXTERNAL}
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/lz4-${VERSION_EXTERNAL}.tar.gz
-                    URL_HASH SHA1=a710a7d45beb0951806d2b98f0c1739107e97c14
+                    URL_HASH SHA1=3ef95c78f14ac26a806518846e4a24a2b0d825b4
                     SOURCE_SUBDIR contrib/cmake_unofficial
                     CMAKE_ARGS ${PRJ_CMAKE_ARGS}
                     INSTALL_COMMAND make install
