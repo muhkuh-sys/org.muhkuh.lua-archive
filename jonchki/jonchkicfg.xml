@@ -1,5 +1,13 @@
 <jonchkicfg>
 	<repositories>
+		<!-- This local repository contains the build artefacts from this project. -->
+		<repository id="local" type="file" cacheable="false">
+			<root>../../../../jonchki/repository</root>
+			<versions>[group]/[module]</versions>
+			<config>[group]/[module]/[version]/[artifact]-[version].[extension]</config>
+			<artifact>[group]/[module]/[version]/[artifact]-[version].[extension]</artifact>
+		</repository>
+
 		<!-- The nexus repository is Hilscher internal. -->
 		<!-- NOTE: Nexus does not support modules. Replace them with the artifact. -->
 		<repository id="nexus" type="url" cacheable="true">
