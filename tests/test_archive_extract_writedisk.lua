@@ -37,9 +37,11 @@ else
 			end
 			tWriter:write_data(strData)
 		end
+		tWriter:finish_entry()
 	end
 end
 
+tWriter:close()
 
 -- Go back to the old working directory.
 lfs.chdir(strCurrentWorkingDirectory)
