@@ -3,6 +3,9 @@ set -e
 
 TARGET=$1
 
+JONCHKI_VERSION=0.0.3.1
+JONCHKI_VERBOSE=info
+
 # Get the path to this script. Found here: https://stackoverflow.com/questions/59895/getting-the-source-directory-of-a-bash-script-from-within
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -12,19 +15,46 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 PRJ_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+
+# Check for all build dependencies.
+declare -a -r astrDeb=(
+	"lua5.1"
+	"lua-sql-sqlite3"
+	"lua-filesystem"
+	"lua-expat"
+	"p7zip-full"
+	"xz-utils"
+)
+declare -a astrInstall=()
+for strDeb in "${astrDeb[@]}"
+do
+	DPKG_STATUS=`dpkg-query -W -f='${Status}' ${strDeb} || echo 'unknown'`
+	if [ "$DPKG_STATUS" != "install ok installed" ]; then
+		astrInstall+=("${strDeb}")
+	fi
+done
+if [ ${#astrInstall[@]} -gt 0 ]; then
+	sudo apt-get update --assume-yes
+	sudo apt-get install --assume-yes ${astrInstall[@]}
+fi
+
+
 if [ "$TARGET" == "linux" ]; then
 	CMAKE_COMPILER=""
+	CMAKE_PLATFORM=""
 	JONCHKI_SYSTEM=""
 	TOOLS_PATH=${PATH}
 
 elif [ "$TARGET" == "windows32" ]; then
 	CMAKE_COMPILER="-DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++ -DCMAKE_RC_COMPILER=i686-w64-mingw32-windres"
-	JONCHKI_SYSTEM="--distribution-id windows --cpu-architecture x86"
+	CMAKE_PLATFORM="-DJONCHKI_PLATFORM_DIST_ID=windows -DJONCHKI_PLATFORM_DIST_VERSION="" -DJONCHKI_PLATFORM_CPU_ARCH=x86"
+	JONCHKI_SYSTEM="--distribution-id windows --empty-distribution-version --cpu-architecture x86"
 	TOOLS_PATH=/usr/mingw-w64-i686/bin:${PATH}
 
 elif [ "$TARGET" == "windows64" ]; then
 	CMAKE_COMPILER="-DCMAKE_C_FLAGS=-m64 -DCMAKE_CXX_FLAGS=-m64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres"
-	JONCHKI_SYSTEM="--distribution-id windows --cpu-architecture x86_64"
+	CMAKE_PLATFORM="-DJONCHKI_PLATFORM_DIST_ID=windows -DJONCHKI_PLATFORM_DIST_VERSION="" -DJONCHKI_PLATFORM_CPU_ARCH=x86_64"
+	JONCHKI_SYSTEM="--distribution-id windows --empty-distribution-version --cpu-architecture x86_64"
 	TOOLS_PATH=/usr/mingw-w64-x86_64/bin:${PATH}
 
 else
@@ -40,16 +70,22 @@ mkdir -p ${BUILD_DIR}/lua5.2/build_requirements
 mkdir -p ${BUILD_DIR}/lua5.3/build_requirements
 
 
-# Install jonchki v0.0.2.1 .
-python2.7 jonchki/jonchkihere.py --jonchki-version 0.0.2.1 --local-archives ${PRJ_DIR}/jonchki/local_archives ${PRJ_DIR}/build
-# This is the path to the jonchki tool.
-JONCHKI=${PRJ_DIR}/build/jonchki-0.0.2.1/jonchki
+# Install jonchki.
+python2.7 jonchki/jonchkihere.py --jonchki-version ${JONCHKI_VERSION} --local-archives ${PRJ_DIR}/jonchki/local_archives ${PRJ_DIR}/build
+if [ -f ${PRJ_DIR}/build/.jonchki.cmd ]; then
+	JONCHKI=$(<${PRJ_DIR}/build/.jonchki.cmd)
+fi
+if [ "${JONCHKI}" == "" ]; then
+	echo "Failed to extract the jonchki command from the jonchkihere output."
+	exit 1
+fi
+
 
 # Get the build requirements for the LUA5.1 version and the externals.
 pushd ${BUILD_DIR}/lua5.1/build_requirements
 rm -f lua-archive/lua5.1-archive-*.xml
-cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${PRJ_DIR}
-make
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.1-archive-*.xml
 popd
 NET_ZLIB_ZLIB_DIR=${BUILD_DIR}/lua5.1/build_requirements/jonchki/install/dev/cmake
@@ -65,34 +101,34 @@ CMAKE_PATHS="-DEXTERNAL_LIB_DIR=${BUILD_DIR}/external/install/lib -DEXTERNAL_INC
 
 # Build the LUA5.1 version.
 pushd ${BUILD_DIR}/lua5.1
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
 
 
 pushd ${BUILD_DIR}/lua5.2/build_requirements
 rm -f lua-archive/lua5.2-archive-*.xml
-cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${PRJ_DIR}
-make
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.2-archive-*.xml
 popd
 
 # Build the LUA5.2 version.
 pushd ${BUILD_DIR}/lua5.2
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
 
 
 pushd ${BUILD_DIR}/lua5.3/build_requirements
 rm -f lua-archive/lua5.3-archive-*.xml
-cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${PRJ_DIR}
-make
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.3-archive-*.xml
 popd
 
 # Build the LUA5.3 version.
 pushd ${BUILD_DIR}/lua5.3
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
