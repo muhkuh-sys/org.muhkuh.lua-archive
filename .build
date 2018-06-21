@@ -18,6 +18,7 @@ PRJ_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 # Check for all build dependencies.
 declare -a -r astrDeb=(
+	"libacl1-dev"
 	"lua5.1"
 	"lua-sql-sqlite3"
 	"lua-filesystem"
