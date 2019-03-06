@@ -41,22 +41,39 @@ fi
 
 
 if [ "$TARGET" == "linux" ]; then
-	CMAKE_COMPILER=""
+	CMAKE_CROSS_COMPILER=""
 	CMAKE_PLATFORM=""
 	JONCHKI_SYSTEM=""
 	TOOLS_PATH=${PATH}
 
 elif [ "$TARGET" == "windows32" ]; then
-	CMAKE_COMPILER="-DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++ -DCMAKE_RC_COMPILER=i686-w64-mingw32-windres"
+	CMAKE_CROSS_COMPILER="-DCMAKE_TOOLCHAIN_FILE=${PRJ_DIR}/cmake/toolchainfiles/toolchain_windows_32.cmake"
 	CMAKE_PLATFORM="-DJONCHKI_PLATFORM_DIST_ID=windows -DJONCHKI_PLATFORM_DIST_VERSION="" -DJONCHKI_PLATFORM_CPU_ARCH=x86"
 	JONCHKI_SYSTEM="--distribution-id windows --empty-distribution-version --cpu-architecture x86"
 	TOOLS_PATH=/usr/mingw-w64-i686/bin:${PATH}
 
 elif [ "$TARGET" == "windows64" ]; then
-	CMAKE_COMPILER="-DCMAKE_C_FLAGS=-m64 -DCMAKE_CXX_FLAGS=-m64 -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ -DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres"
+	CMAKE_CROSS_COMPILER="-DCMAKE_TOOLCHAIN_FILE=${PRJ_DIR}/cmake/toolchainfiles/toolchain_windows_64.cmake"
 	CMAKE_PLATFORM="-DJONCHKI_PLATFORM_DIST_ID=windows -DJONCHKI_PLATFORM_DIST_VERSION="" -DJONCHKI_PLATFORM_CPU_ARCH=x86_64"
 	JONCHKI_SYSTEM="--distribution-id windows --empty-distribution-version --cpu-architecture x86_64"
 	TOOLS_PATH=/usr/mingw-w64-x86_64/bin:${PATH}
+
+elif [ "$TARGET" == "raspberry" ]; then
+	rm -rf build/raspberry
+	mkdir -p build/raspberry
+
+	# Download all build dependencies to a special folder.
+	PKGBASE=${PRJ_DIR}/build/raspberry/packages
+	mkdir -p ${PKGBASE}
+	pushd ${PKGBASE}
+	echo $PKGBASE
+	${PRJ_DIR}/cmake/tools/get_dependencies.sh libacl1-dev:arm64
+	popd
+
+	CMAKE_CROSS_COMPILER="-DCMAKE_TOOLCHAIN_FILE=${PRJ_DIR}/cmake/toolchainfiles/toolchain_ubuntu_arm64.cmake"
+	CMAKE_PLATFORM="-DJONCHKI_PLATFORM_DIST_ID=ubuntu -DJONCHKI_PLATFORM_DIST_VERSION=18.04 -DJONCHKI_PLATFORM_CPU_ARCH=arm64"
+	JONCHKI_SYSTEM="--distribution-id ubuntu --distribution-version 18.04 --cpu-architecture arm64"
+	TOOLS_PATH=${PATH}
 
 else
 	echo "Unknown build target: ${TARGET}"
@@ -85,7 +102,7 @@ fi
 # Get the build requirements for the LUA5.1 version and the externals.
 pushd ${BUILD_DIR}/lua5.1/build_requirements
 rm -f lua-archive/lua5.1-archive-*.xml
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.1-archive-*.xml
 popd
@@ -94,7 +111,7 @@ NET_ZLIB_ZLIB_DIR=${BUILD_DIR}/lua5.1/build_requirements/jonchki/install/dev/cma
 
 # Build the external components.
 pushd ${BUILD_DIR}/external
-PATH=${TOOLS_PATH} cmake -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} -Dnet.zlib-zlib_DIR=${NET_ZLIB_ZLIB_DIR} ${PRJ_DIR}/external
+PATH=${TOOLS_PATH} cmake -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} -Dnet.zlib-zlib_DIR=${NET_ZLIB_ZLIB_DIR} ${PRJ_DIR}/external
 PATH=${TOOLS_PATH} make
 popd
 # Get the additional CMAKE search paths.
@@ -102,34 +119,34 @@ CMAKE_PATHS="-DEXTERNAL_LIB_DIR=${BUILD_DIR}/external/install/lib -DEXTERNAL_INC
 
 # Build the LUA5.1 version.
 pushd ${BUILD_DIR}/lua5.1
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.1" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
 
 
 pushd ${BUILD_DIR}/lua5.2/build_requirements
 rm -f lua-archive/lua5.2-archive-*.xml
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.2-archive-*.xml
 popd
 
 # Build the LUA5.2 version.
 pushd ${BUILD_DIR}/lua5.2
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.2" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
 
 
 pushd ${BUILD_DIR}/lua5.3/build_requirements
 rm -f lua-archive/lua5.3-archive-*.xml
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make
 ${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.3-archive-*.xml
 popd
 
 # Build the LUA5.3 version.
 pushd ${BUILD_DIR}/lua5.3
-PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
+PATH=${TOOLS_PATH} cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 PATH=${TOOLS_PATH} make pack
 popd
