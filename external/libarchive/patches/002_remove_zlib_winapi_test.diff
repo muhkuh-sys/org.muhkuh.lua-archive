@@ -1,7 +1,7 @@
-diff -uNr libarchive-3.3.1_org/CMakeLists.txt libarchive-3.3.1_patched/CMakeLists.txt
---- libarchive-3.3.1_org/CMakeLists.txt	2017-04-27 10:28:42.000000000 +0200
-+++ libarchive-3.3.1_patched/CMakeLists.txt	2017-04-27 10:36:54.939242458 +0200
-@@ -399,29 +399,6 @@
+diff -uNr libarchive-3.3.3/CMakeLists.txt libarchive-3.3.3_patched/CMakeLists.txt
+--- libarchive-3.3.3/CMakeLists.txt	2019-04-01 13:18:43.045644747 +0200
++++ libarchive-3.3.3_patched/CMakeLists.txt	2019-04-01 13:20:08.727458516 +0200
+@@ -400,29 +400,6 @@
    SET(HAVE_ZLIB_H 1)
    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
    LIST(APPEND ADDITIONAL_LIBS ${ZLIB_LIBRARIES})

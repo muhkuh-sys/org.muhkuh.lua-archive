@@ -1,0 +1,20 @@
+diff -uNr libarchive-3.3.3/CMakeLists.txt libarchive-3.3.3_patched/CMakeLists.txt
+--- libarchive-3.3.3/CMakeLists.txt	2019-04-01 14:13:32.050509647 +0200
++++ libarchive-3.3.3_patched/CMakeLists.txt	2019-04-01 14:15:32.361876098 +0200
+@@ -89,13 +89,14 @@
+ # aggressive about diagnosing build problems; this can get
+ # relaxed somewhat in final shipping versions.
+ IF (CMAKE_C_COMPILER_ID MATCHES "^GNU$")
+-  SET(CMAKE_REQUIRED_FLAGS "-Wall -Wformat -Wformat-security")
++  SET(CMAKE_REQUIRED_FLAGS "-fPIC -Wall -Wformat -Wformat-security")
+   #################################################################
+   # Set compile flags for all build types.
+-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wformat -Wformat-security")
++  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall -Wformat -Wformat-security")
+   #################################################################
+   # Set compile flags for debug build.
+   # This is added into CMAKE_C_FLAGS when CMAKE_BUILD_TYPE is "Debug"
++  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fPIC")
+   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Werror")
+   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wextra")
+   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wunused")

@@ -1,7 +1,7 @@
-diff -uNr libarchive-3.3.1_org/CMakeLists.txt libarchive-3.3.1_patched/CMakeLists.txt
---- libarchive-3.3.1_org/CMakeLists.txt	2017-02-25 20:31:44.000000000 +0100
-+++ libarchive-3.3.1_patched/CMakeLists.txt	2017-03-22 12:01:04.550107461 +0100
-@@ -386,7 +386,11 @@
+diff -uNr libarchive-3.3.3/CMakeLists.txt libarchive-3.3.3_patched/CMakeLists.txt
+--- libarchive-3.3.3/CMakeLists.txt	2018-09-04 00:54:26.000000000 +0200
++++ libarchive-3.3.3_patched/CMakeLists.txt	2019-04-01 13:17:35.936231681 +0200
+@@ -387,7 +387,11 @@
  # Find ZLIB
  #
  IF(ENABLE_ZLIB)

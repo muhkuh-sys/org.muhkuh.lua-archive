@@ -7,20 +7,13 @@ INCLUDE(ExternalProject)
 # Python is used for some test scripts.
 FIND_PACKAGE(PythonInterp 2.7 REQUIRED)
 
-SET(VERSION_EXTERNAL "3.3.2")
+SET(VERSION_EXTERNAL "3.3.3")
 
 
 #----------------------------------------------------------------------------
 #
 # Build the project.
 #
-IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-	SET(LOCAL_CFLAGS "-fPIC")
-ELSE("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-	SET(LOCAL_CFLAGS "")
-ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"  AND  "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-
-
 SET(PRJ_CMAKE_ARGS "")
 
 LIST(APPEND PRJ_CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
@@ -57,7 +50,7 @@ LIST(APPEND PRJ_CMAKE_ARGS "-Dnet.zlib-zlib_DIR=${net.zlib-zlib_DIR}")
 ExternalProject_Add(TARGET_libarchive
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libarchive-${VERSION_EXTERNAL}.tar.gz
-                    URL_HASH SHA1=580064227105e30322caa6c67b59e8c8e6060027
+                    URL_HASH SHA1=499a8f48a895faff4151d7398b24070d578f0b2e
                     PATCH_COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_HOME_DIRECTORY}/cmake/tools/apply_patches.py --working-folder ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}/src/TARGET_libarchive --patch-folder ${CMAKE_CURRENT_SOURCE_DIR}/patches --strip 1
                     CMAKE_ARGS ${PRJ_CMAKE_ARGS}
                     INSTALL_COMMAND make install
