@@ -79,6 +79,7 @@ mkdir -p ${BUILD_DIR}/external
 mkdir -p ${BUILD_DIR}/lua5.1/build_requirements
 mkdir -p ${BUILD_DIR}/lua5.2/build_requirements
 mkdir -p ${BUILD_DIR}/lua5.3/build_requirements
+mkdir -p ${BUILD_DIR}/lua5.4/build_requirements
 
 
 # Install jonchki.
@@ -141,5 +142,19 @@ popd
 # Build the LUA5.3 version.
 pushd ${BUILD_DIR}/lua5.3
 cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.3" -DCMAKE_INSTALL_PREFIX="" -DPRJ_DIR=${PRJ_DIR} ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
+make pack
+popd
+
+
+pushd ${BUILD_DIR}/lua5.4/build_requirements
+rm -f lua-archive/lua5.4-archive-*.xml
+cmake -DBUILDCFG_ONLY_JONCHKI_CFG="ON" -DBUILDCFG_LUA_VERSION="5.4" -DCMAKE_INSTALL_PREFIX="" -DPRJ_DIR=${PRJ_DIR} ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${PRJ_DIR}
+make
+${JONCHKI} install-dependencies --verbose debug --syscfg ${PRJ_DIR}/jonchki/jonchkisys.cfg --prjcfg ${PRJ_DIR}/jonchki/jonchkicfg.xml ${JONCHKI_SYSTEM} --build-dependencies lua-archive/lua5.4-archive-*.xml
+popd
+
+# Build the LUA5.4 version.
+pushd ${BUILD_DIR}/lua5.4
+cmake -DBUILDCFG_LUA_USE_SYSTEM="OFF" -DBUILDCFG_LUA_VERSION="5.4" -DCMAKE_INSTALL_PREFIX="" -DPRJ_DIR=${PRJ_DIR} ${CMAKE_CROSS_COMPILER} ${CMAKE_PLATFORM} ${CMAKE_PATHS} ${PRJ_DIR}
 make pack
 popd
