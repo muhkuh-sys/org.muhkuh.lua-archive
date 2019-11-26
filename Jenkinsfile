@@ -6,13 +6,13 @@ node {
     def atBuilds = new JsonSlurperClassic().parseText(strBuilds)
 
     atBuilds.each { atEntry ->
-        stage(atEntry[0]){
-            docker.image("${atEntry[2]}").inside('-u root') {
+        stage("${atEntry[0]} ${atEntry[1]} ${atEntry[2]}"){
+            docker.image("${atEntry[3]}").inside('-u root') {
                 /* Clean before the build. */
                 sh 'rm -rf .[^.] .??* *'
 
                 checkout([$class: 'GitSCM',
-                    branches: [[name: '*/master']],
+                    branches: [[name: env.GIT_BRANCH_SPECIFIER]],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [
                         [$class: 'SubmoduleOption',
@@ -27,7 +27,7 @@ node {
                 ])
 
                 /* Build the project. */
-                sh "bash .build ${atEntry[1]}"
+                sh "python2.7 build_artifact.py ${atEntry[0]} ${atEntry[1]} ${atEntry[2]}"
 
                 /* Archive all artifacts. */
                 archiveArtifacts artifacts: "${ARTIFACTS_PATH}/*.tar.xz,${ARTIFACTS_PATH}/*.xml,${ARTIFACTS_PATH}/*.hash,${ARTIFACTS_PATH}/*.pom"
