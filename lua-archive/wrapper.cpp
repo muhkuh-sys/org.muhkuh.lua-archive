@@ -1076,7 +1076,7 @@ int ArchiveReadCommon::iterator_read_data(lua_State *ptLuaState)
 
 int ArchiveReadCommon::close(void)
 {
-	archive_read_close(m_ptArchive);
+	return archive_read_close(m_ptArchive);
 }
 
 
