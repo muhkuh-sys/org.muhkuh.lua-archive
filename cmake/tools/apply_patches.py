@@ -23,7 +23,9 @@ def apply_diffs(strWorkingFolder, strPatchFolder, uiStrip):
         # Apply the patches.
         tPatch = patch.fromfile(strPatch)
         tPatch.diffstat()
-        tPatch.apply(uiStrip, root=strWorkingFolder)
+        tResult = tPatch.apply(uiStrip, root=strWorkingFolder)
+        if tResult is not True:
+            raise Exception('Failed to apply patch "%s"!' % strPatch)
 
 
 def __copy_file(strSource, strDestination):
