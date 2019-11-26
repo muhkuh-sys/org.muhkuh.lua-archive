@@ -102,6 +102,24 @@ if tPlatform['host_distribution_id'] == 'ubuntu':
                 'libacl1-dev:arm64'
             ]
             install.install_foreign_debs(astrDeb, strCfg_workingFolder, strCfg_projectFolder)
+            if tPlatform['distribution_version'] == '19.10':
+                os.symlink(
+                    os.path.join(
+                        strCfg_workingFolder,
+                        'packages',
+                        'usr',
+                        'lib',
+                        'aarch64-linux-gnu',
+                        'libacl.a'
+                    ),
+                    os.path.join(
+                        strCfg_workingFolder,
+                        'packages',
+                        'lib',
+                        'aarch64-linux-gnu',
+                        'libacl.a'
+                    )
+                )
 
             astrCMAKE_COMPILER = [
                 '-DCMAKE_TOOLCHAIN_FILE=%s/cmake/toolchainfiles/toolchain_ubuntu_arm64.cmake' % strCfg_projectFolder
