@@ -1,9 +1,8 @@
-#! /usr/bin/python2.7
+#! /usr/bin/python3
 
 from jonchki import cli_args
 from jonchki import install
 from jonchki import jonchkihere
-from jonchki import vcs_id
 
 import glob
 import os
@@ -36,7 +35,12 @@ strCfg_jonchkiHerePath = os.path.join(
     'jonchki'
 )
 # This is the Jonchki version to use.
-strCfg_jonchkiVersion = '0.0.5.1'
+strCfg_jonchkiVersion = '0.0.6.1'
+
+# This is ther verbose level. It can be one of the strings 'debug', 'info',
+# 'warning', 'error' or 'fatal'.
+strCfg_jonchkiVerbose = 'debug'
+
 # Look in this folder for Jonchki archives before downloading them.
 strCfg_jonchkiLocalArchives = os.path.join(
     strCfg_projectFolder,
@@ -51,10 +55,16 @@ strCfg_jonchkiInstallationFolder = os.path.join(
     'build'
 )
 
-# Select the verbose level for jonchki.
-# Possible values are "debug", "info", "warning", "error" and "fatal".
-strCfg_jonchkiVerbose = 'info'
-
+strCfg_jonchkiLog51 = os.path.join(
+    strCfg_workingFolder,
+    'lua5.1',
+    'jonchki.log'
+)
+strCfg_jonchkiLog54 = os.path.join(
+    strCfg_workingFolder,
+    'lua5.4',
+    'jonchki.log'
+)
 strCfg_jonchkiSystemConfiguration = os.path.join(
     strCfg_projectFolder,
     'jonchki',
@@ -64,6 +74,14 @@ strCfg_jonchkiProjectConfiguration = os.path.join(
     strCfg_projectFolder,
     'jonchki',
     'jonchkicfg.xml'
+)
+strCfg_jonchkiDependencyLog51 = os.path.join(
+    strCfg_projectFolder,
+    'dependency-log-lua5.1.xml'
+)
+strCfg_jonchkiDependencyLog54 = os.path.join(
+    strCfg_projectFolder,
+    'dependency-log-lua5.4.xml'
 )
 
 # -
@@ -220,13 +238,6 @@ strJonchki = jonchkihere.install(
     LOCAL_ARCHIVES=strCfg_jonchkiLocalArchives
 )
 
-# Try to get the VCS ID.
-strProjectVersionVcs, strProjectVersionVcsLong = vcs_id.get(
-    strCfg_projectFolder
-)
-print(strProjectVersionVcs, strProjectVersionVcsLong)
-
-
 # ---------------------------------------------------------------------------
 #
 # Get the build requirements for LUA5.1 and the externals.
@@ -259,7 +270,9 @@ astrCmd = [
     'install-dependencies',
     '--verbose', strCfg_jonchkiVerbose,
     '--syscfg', strCfg_jonchkiSystemConfiguration,
-    '--prjcfg', strCfg_jonchkiProjectConfiguration
+    '--prjcfg', strCfg_jonchkiProjectConfiguration,
+    '--logfile', strCfg_jonchkiLog51,
+    '--dependency-log', strCfg_jonchkiDependencyLog51
 ]
 astrCmd.extend(astrJONCHKI_SYSTEM)
 astrCmd.append('--build-dependencies')
@@ -339,7 +352,9 @@ astrCmd = [
     'install-dependencies',
     '--verbose', strCfg_jonchkiVerbose,
     '--syscfg', strCfg_jonchkiSystemConfiguration,
-    '--prjcfg', strCfg_jonchkiProjectConfiguration
+    '--prjcfg', strCfg_jonchkiProjectConfiguration,
+    '--logfile', strCfg_jonchkiLog54,
+    '--dependency-log', strCfg_jonchkiDependencyLog54
 ]
 astrCmd.extend(astrJONCHKI_SYSTEM)
 astrCmd.append('--build-dependencies')
