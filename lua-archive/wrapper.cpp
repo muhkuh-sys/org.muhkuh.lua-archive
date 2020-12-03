@@ -1219,6 +1219,13 @@ int ArchiveRead::support_filter_xz(void)
 
 
 
+int ArchiveRead::support_filter_zstd(void)
+{
+	return archive_read_support_filter_zstd(m_ptArchive);
+}
+
+
+
 int ArchiveRead::support_format_all(void)
 {
 	return archive_read_support_format_all(m_ptArchive);
@@ -1299,6 +1306,13 @@ int ArchiveRead::support_format_mtree(void)
 int ArchiveRead::support_format_rar(void)
 {
 	return archive_read_support_format_rar(m_ptArchive);
+}
+
+
+
+int ArchiveRead::support_format_rar5(void)
+{
+	return archive_read_support_format_rar5(m_ptArchive);
 }
 
 
