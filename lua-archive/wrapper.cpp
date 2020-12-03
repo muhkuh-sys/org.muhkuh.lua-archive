@@ -1987,6 +1987,34 @@ int ArchiveWrite::zip_set_compression_store(void)
 
 
 
+int ArchiveWrite::set_format_option(const char *m, const char *o, const char *v)
+{
+	return archive_write_set_format_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveWrite::set_filter_option(const char *m, const char *o, const char *v)
+{
+	return archive_write_set_filter_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveWrite::set_option(const char *m, const char *o, const char *v)
+{
+	return archive_write_set_option(m_ptArchive, m, o, v);
+}
+
+
+
+int ArchiveWrite::set_options(const char *opts)
+{
+	return archive_write_set_options(m_ptArchive, opts);
+}
+
+
+
 int ArchiveWrite::open_filename(const char *_file)
 {
 	return archive_write_open_filename(m_ptArchive, _file);

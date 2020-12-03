@@ -429,6 +429,11 @@ public:
 	int zip_set_compression_deflate(void);
 	int zip_set_compression_store(void);
 
+	int set_format_option(const char *m, const char *o, const char *v);
+	int set_filter_option(const char *m, const char *o, const char *v);
+	int set_option(const char *m, const char *o, const char *v);
+	int set_options(const char *opts);
+
 	int open_filename(const char *_file);
 	int open_filename_w(const wchar_t *_file);
 	int open_memory(unsigned int uiBufferSize);
