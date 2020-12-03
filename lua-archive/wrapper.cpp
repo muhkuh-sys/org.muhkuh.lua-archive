@@ -1087,6 +1087,8 @@ int ArchiveReadCommon::close(void)
 
 ArchiveRead::ArchiveRead(void)
  : ArchiveReadCommon()
+ , m_pvBuffer(NULL)
+ , m_sizBufferAllocated(0)
 {
 	/* Allocate a new archive structure. */
 	m_ptArchive = archive_read_new();
@@ -1107,6 +1109,13 @@ ArchiveRead::~ArchiveRead(void)
 			printf("Failed to free the archive structure!\n");
 		}
 		m_ptArchive = NULL;
+	}
+
+	if( m_pvBuffer!=NULL )
+	{
+		free(m_pvBuffer);
+		m_pvBuffer = NULL;
+		m_sizBufferAllocated = 0;
 	}
 }
 
@@ -1405,6 +1414,47 @@ int ArchiveRead::extract2(ArchiveEntry *ptEntry, ArchiveWrite *ptDestArchive)
 }
 
 
+
+int ArchiveRead::open_memory(const char *pcBUFFER_IN, size_t sizBUFFER_IN)
+{
+	int iResult;
+	void *pvBuffer;
+
+
+	if( sizBUFFER_IN==0 )
+	{
+		iResult = ARCHIVE_FAILED;
+	}
+	else
+	{
+		/* Free any old buffers. */
+		if( m_pvBuffer!=NULL )
+		{
+			free(m_pvBuffer);
+			m_pvBuffer = NULL;
+			m_sizBufferAllocated = 0;
+		}
+
+		/* Make a copy of the archive data. */
+		pvBuffer = malloc(sizBUFFER_IN);
+		if( pvBuffer==NULL )
+		{
+			iResult = ARCHIVE_FAILED;
+		}
+		else
+		{
+			m_pvBuffer = pvBuffer;
+			m_sizBufferAllocated = sizBUFFER_IN;
+			memcpy(m_pvBuffer, pcBUFFER_IN, sizBUFFER_IN);
+
+			iResult = archive_read_open_memory(m_ptArchive, m_pvBuffer, sizBUFFER_IN);
+		}
+	}
+
+	return iResult;
+}
+
+
 /*--------------------------------------------------------------------------*/
 
 
@@ -1616,6 +1666,9 @@ int ArchiveWriteCommon::close(void)
 
 ArchiveWrite::ArchiveWrite(void)
  : ArchiveWriteCommon()
+ , m_sizBufferAllocated(0)
+ , m_pvBuffer(NULL)
+ , m_sizBufferUsed(0)
 {
 	/* Allocate a new archive structure. */
 	m_ptArchive = archive_write_new();
@@ -1636,6 +1689,12 @@ ArchiveWrite::~ArchiveWrite(void)
 			printf("Failed to free the archive structure!\n");
 		}
 		m_ptArchive = NULL;
+	}
+
+	if( m_pvBuffer!=NULL )
+	{
+		free(m_pvBuffer);
+		m_pvBuffer = NULL;
 	}
 }
 
@@ -1938,6 +1997,66 @@ int ArchiveWrite::open_filename(const char *_file)
 int ArchiveWrite::open_filename_w(const wchar_t *_file)
 {
 	return archive_write_open_filename_w(m_ptArchive, _file);
+}
+
+
+
+int ArchiveWrite::open_memory(unsigned int uiBufferSize)
+{
+	int iResult;
+	void *pvBuffer;
+
+
+	if( uiBufferSize==0 )
+	{
+		iResult = ARCHIVE_FAILED;
+	}
+	else
+	{
+		if( m_pvBuffer!=NULL )
+		{
+			free(m_pvBuffer);
+			m_pvBuffer = NULL;
+		}
+
+		pvBuffer = malloc(uiBufferSize);
+		if( pvBuffer==NULL )
+		{
+			iResult = ARCHIVE_FAILED;
+		}
+		else
+		{
+			m_pvBuffer = pvBuffer;
+			m_sizBufferAllocated = uiBufferSize;
+			iResult = archive_write_open_memory(m_ptArchive, m_pvBuffer, m_sizBufferAllocated, &m_sizBufferUsed);
+		}
+	}
+
+	return iResult;
+}
+
+
+
+void ArchiveWrite::get_memory(char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT)
+{
+	void *pvBuffer;
+
+
+	if( m_sizBufferUsed==0 )
+	{
+		pvBuffer = NULL;
+	}
+	else
+	{
+		pvBuffer = malloc(m_sizBufferUsed);
+		if( pvBuffer!=NULL )
+		{
+			memcpy(pvBuffer, m_pvBuffer, m_sizBufferUsed);
+		}
+	}
+
+	*ppcBUFFER_OUT = (char*)pvBuffer;
+	*psizBUFFER_OUT = m_sizBufferUsed;
 }
 
 

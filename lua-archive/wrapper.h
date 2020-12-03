@@ -431,6 +431,15 @@ public:
 
 	int open_filename(const char *_file);
 	int open_filename_w(const wchar_t *_file);
+	int open_memory(unsigned int uiBufferSize);
+	void get_memory(char **ppcBUFFER_OUT, size_t *psizBUFFER_OUT);
+
+#ifndef SWIG
+private:
+	size_t m_sizBufferAllocated;
+	void *m_pvBuffer;
+	size_t m_sizBufferUsed;
+#endif
 };
 
 
@@ -524,6 +533,14 @@ public:
 
 	int extract(ArchiveEntry *ptEntry, int flags);
 	int extract2(ArchiveEntry *ptEntry, ArchiveWrite *ptDestArchive);
+
+	int open_memory(const char *pcBUFFER_IN, size_t sizBUFFER_IN);
+
+#ifndef SWIG
+private:
+	size_t m_sizBufferAllocated;
+	void *m_pvBuffer;
+#endif
 };
 
 
