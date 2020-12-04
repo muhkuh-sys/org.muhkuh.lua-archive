@@ -7,7 +7,7 @@ INCLUDE(ExternalProject)
 # Python is used for some test scripts.
 FIND_PACKAGE(PythonInterp 2.7 REQUIRED)
 
-SET(VERSION_EXTERNAL "3.4.3")
+SET(VERSION_EXTERNAL "3.5.0")
 
 
 #----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ LIST(APPEND PRJ_CMAKE_ARGS "-Dnet.zlib-zlib_DIR=${net.zlib-zlib_DIR}")
 ExternalProject_Add(TARGET_libarchive
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/libarchive-${VERSION_EXTERNAL}.tar.xz
-                    URL_HASH SHA1=53f1400ac71778d14615a66f89e04403548fae76
+                    URL_HASH SHA1=b53da969cfc4a0b3235b2589b0d636db17c5d57e
                     PATCH_COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_HOME_DIRECTORY}/cmake/tools/apply_patches.py --working-folder ${CMAKE_CURRENT_BINARY_DIR}/libarchive-${VERSION_EXTERNAL}/src/TARGET_libarchive --patch-folder ${CMAKE_CURRENT_SOURCE_DIR}/patches --strip 1
                     CMAKE_ARGS ${PRJ_CMAKE_ARGS}
                     INSTALL_COMMAND make install
