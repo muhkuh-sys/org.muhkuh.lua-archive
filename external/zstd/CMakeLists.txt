@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.2.3)
+
+PROJECT("zstd")
+
+INCLUDE(ExternalProject)
+
+# Python is used for some test scripts.
+FIND_PACKAGE(PythonInterp 2.7 REQUIRED)
+
+SET(VERSION_EXTERNAL "1.4.5")
+
+
+#----------------------------------------------------------------------------
+#
+# Build the project.
+#
+SET(PRJ_CMAKE_ARGS "")
+
+LIST(APPEND PRJ_CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+LIST(APPEND PRJ_CMAKE_ARGS "-DPRJ_DIR=${PRJ_DIR}")
+LIST(APPEND PRJ_CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/install")
+
+LIST(APPEND PRJ_CMAKE_ARGS "-DZSTD_BUILD_PROGRAMS=OFF")
+LIST(APPEND PRJ_CMAKE_ARGS "-DZSTD_BUILD_TESTS=OFF")
+LIST(APPEND PRJ_CMAKE_ARGS "-DZSTD_BUILD_STATIC=ON")
+LIST(APPEND PRJ_CMAKE_ARGS "-DZSTD_BUILD_SHARED=OFF")
+
+
+ExternalProject_Add(TARGET_zstd
+                    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/zstd-${VERSION_EXTERNAL}
+                    URL ${CMAKE_CURRENT_SOURCE_DIR}/zstd-${VERSION_EXTERNAL}.tar.gz
+                    URL_HASH SHA1=8059ef26c3d7dffa4d6dad64511c0675e46c0da6
+                    SOURCE_SUBDIR build/cmake
+                    CMAKE_ARGS ${PRJ_CMAKE_ARGS}
+                    INSTALL_COMMAND make install
+)
