@@ -1826,6 +1826,13 @@ int ArchiveWrite::add_filter_xz(void)
 
 
 
+int ArchiveWrite::add_filter_zstd(void)
+{
+	return archive_write_add_filter_zstd(m_ptArchive);
+}
+
+
+
 int ArchiveWrite::set_format(int format_code)
 {
 	return archive_write_set_format(m_ptArchive, format_code);

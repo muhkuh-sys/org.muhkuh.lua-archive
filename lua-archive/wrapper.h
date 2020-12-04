@@ -406,6 +406,7 @@ public:
 	int add_filter_program(const char *cmd);
 	int add_filter_uuencode(void);
 	int add_filter_xz(void);
+	int add_filter_zstd(void);
 
 	int set_format(int format_code);
 	int set_format_by_name(const char *name);
