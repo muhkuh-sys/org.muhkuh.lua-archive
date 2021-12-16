@@ -7,6 +7,7 @@
 	#include "wrapper.h"
 %}
 
+typedef long time_t;
 
 /* This typemap adds "SWIGTYPE_" to the name of the input parameter to
  * construct the swig typename. The parameter name must match the definition
