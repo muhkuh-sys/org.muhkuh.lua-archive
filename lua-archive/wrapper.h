@@ -575,6 +575,7 @@ public:
 
 	int open(const char *);
 	int open_w(const wchar_t *);
+	ArchiveEntry *entry_from_file(const char *pcFilename);
 
 	int descend(void);
 	int can_descend(void);

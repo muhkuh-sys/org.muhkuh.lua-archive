@@ -1,5 +1,9 @@
 #include "wrapper.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 int version_number(void)
 {
@@ -1551,6 +1555,56 @@ int ArchiveReadDisk::open(const char *pcFilename)
 int ArchiveReadDisk::open_w(const wchar_t *pcFilename)
 {
 	return archive_read_disk_open_w(m_ptArchive, pcFilename);
+}
+
+
+
+ArchiveEntry *ArchiveReadDisk::entry_from_file(const char *pcFilename)
+{
+	int iResult;
+	int iFd;
+	struct archive_entry *ptArchiveEntry;
+	ArchiveEntry *ptArchiveEntryClass;
+
+
+	/* Open the file in read only mode. */
+	iFd = ::open(pcFilename, O_RDONLY);
+	if( iFd<0 )
+	{
+		/* Failed to open the file. */
+		ptArchiveEntryClass = NULL;
+	}
+	else
+	{
+		/* Create a new entry. */
+		ptArchiveEntry = archive_entry_new();
+		if( ptArchiveEntry==NULL )
+		{
+			/* Failed to create a new entry. */
+			ptArchiveEntryClass = NULL;
+		}
+		else
+		{
+			/* Set the filename to the entry. */
+			archive_entry_copy_pathname(ptArchiveEntry, pcFilename);
+			/* Read the entry data from disk. */
+			iResult = archive_read_disk_entry_from_file(m_ptArchive, ptArchiveEntry, iFd, NULL);
+			if( iResult!=ARCHIVE_OK )
+			{
+				/* Failed to read the data from disk. */
+				archive_entry_free(ptArchiveEntry);
+				ptArchiveEntryClass = NULL;
+			}
+			else
+			{
+				ptArchiveEntryClass = new ArchiveEntry(ptArchiveEntry);
+			}
+		}
+
+		::close(iFd);
+	}
+
+	return ptArchiveEntryClass;
 }
 
 
