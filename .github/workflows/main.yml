@@ -39,21 +39,6 @@ jobs:
           distribution-id: ubuntu
           distribution-version: "18.04"
           cpu-architecture: arm64
-        - # Ubuntu 19.10 x86
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: x86
-        - # Ubuntu 19.10 x86_64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: x86_64
-        - # Ubuntu 19.10 arm64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1910_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "19.10"
-          cpu-architecture: arm64
         - # Ubuntu 20.04 x86_64
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
           distribution-id: ubuntu
