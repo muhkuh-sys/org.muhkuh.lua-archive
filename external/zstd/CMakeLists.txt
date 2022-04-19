@@ -7,7 +7,7 @@ INCLUDE(ExternalProject)
 # Python is used for some test scripts.
 FIND_PACKAGE(PythonInterp 2.7 REQUIRED)
 
-SET(VERSION_EXTERNAL "1.5.0")
+SET(VERSION_EXTERNAL "1.5.2")
 
 
 #----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ LIST(APPEND PRJ_CMAKE_ARGS "-DZSTD_MULTITHREAD_SUPPORT=OFF")
 ExternalProject_Add(TARGET_zstd
                     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/zstd-${VERSION_EXTERNAL}
                     URL ${CMAKE_CURRENT_SOURCE_DIR}/zstd-${VERSION_EXTERNAL}.tar.gz
-                    URL_HASH SHA1=c53019729e3a595f0104facab6533d78296a2945
+                    URL_HASH SHA1=c56c8e6d703d14029464b2a1a66164dc5cf80855
                     SOURCE_SUBDIR build/cmake
                     CMAKE_ARGS ${PRJ_CMAKE_ARGS}
                     INSTALL_COMMAND make install
