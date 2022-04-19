@@ -113,8 +113,61 @@ if tPlatform['host_distribution_id'] == 'ubuntu':
             astrJONCHKI_SYSTEM = []
             strMake = 'make'
 
+        elif tPlatform['cpu_architecture'] == 'armhf':
+            # Build on linux for raspberry.
+
+            astrDeb = [
+                'libacl1-dev:armhf'
+            ]
+            install.install_foreign_debs(astrDeb, strCfg_workingFolder, strCfg_projectFolder)
+            strLib = os.path.join(
+                strCfg_workingFolder,
+                'packages',
+                'lib',
+                'arm-linux-gnueabihf',
+                'libacl.a'
+            )
+            strLibNew = os.path.join(
+                strCfg_workingFolder,
+                'packages',
+                'usr',
+                'lib',
+                'arm-linux-gnueabihf',
+                'libacl.a'
+            )
+            if os.path.exists(strLib) is not True:
+                if os.path.exists(strLibNew) is not True:
+                    raise Exception(
+                        'libacl does not exist in the 2 expected locations '
+                        '%s and %s.' % (
+                            strLib,
+                            strLibNew
+                        )
+                    )
+                else:
+                    os.symlink(
+                        strLibNew,
+                        strLib
+                    )
+
+            astrCMAKE_COMPILER = [
+                '-DCMAKE_TOOLCHAIN_FILE=%s/cmake/toolchainfiles/toolchain_ubuntu_armhf.cmake' % strCfg_projectFolder
+            ]
+            astrCMAKE_PLATFORM = [
+                '-DJONCHKI_PLATFORM_DIST_ID=%s' % tPlatform['distribution_id'],
+                '-DJONCHKI_PLATFORM_DIST_VERSION=%s' % tPlatform['distribution_version'],
+                '-DJONCHKI_PLATFORM_CPU_ARCH=%s' % tPlatform['cpu_architecture']
+            ]
+
+            astrJONCHKI_SYSTEM = [
+                '--distribution-id %s' % tPlatform['distribution_id'],
+                '--distribution-version %s' % tPlatform['distribution_version'],
+                '--cpu-architecture %s' % tPlatform['cpu_architecture']
+            ]
+            strMake = 'make'
+
         elif tPlatform['cpu_architecture'] == 'arm64':
-            # Build on linux for raspebrry.
+            # Build on linux for raspberry.
 
             astrDeb = [
                 'libacl1-dev:arm64'
@@ -137,7 +190,7 @@ if tPlatform['host_distribution_id'] == 'ubuntu':
             )
             if os.path.exists(strLib) is not True:
                 if os.path.exists(strLibNew) is not True:
-                    raise Exeption(
+                    raise Exception(
                         'libacl does not exist in the 2 expected locations '
                         '%s and %s.' % (
                             strLib,
