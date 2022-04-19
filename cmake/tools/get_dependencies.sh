@@ -18,3 +18,4 @@ done
 # conflict with the compiler builtins.
 find . -name "libc*" -delete
 find . -name "libpthread*" -delete
+find . -name "stdio.h" -delete
