@@ -1,10 +1,10 @@
-diff -uNr libarchive-3.4.0/CMakeLists.txt libarchive-3.4.0_patched/CMakeLists.txt
---- libarchive-3.4.0/CMakeLists.txt	2019-11-19 08:34:33.648977190 +0100
-+++ libarchive-3.4.0_patched/CMakeLists.txt	2019-11-19 08:37:52.242951390 +0100
-@@ -97,16 +97,17 @@
- # aggressive about diagnosing build problems; this can get
+diff -uNr libarchive-3.6.1/CMakeLists.txt libarchive-3.6.1_patched/CMakeLists.txt
+--- libarchive-3.6.1/CMakeLists.txt	2022-04-19 10:52:31.341015859 +0200
++++ libarchive-3.6.1_patched/CMakeLists.txt	2022-04-19 10:54:01.477069158 +0200
+@@ -101,16 +101,17 @@
  # relaxed somewhat in final shipping versions.
- IF (CMAKE_C_COMPILER_ID MATCHES "^GNU$")
+ IF (CMAKE_C_COMPILER_ID MATCHES "^GNU$" OR
+     CMAKE_C_COMPILER_ID MATCHES "^Clang$")
 -  SET(CMAKE_REQUIRED_FLAGS "-Wall -Wformat -Wformat-security")
 +  SET(CMAKE_REQUIRED_FLAGS "-fPIC -Wall -Wformat -Wformat-security")
    #################################################################
@@ -18,6 +18,6 @@ diff -uNr libarchive-3.4.0/CMakeLists.txt libarchive-3.4.0_patched/CMakeLists.tx
    # Set compile flags for debug build.
    # This is added into CMAKE_C_FLAGS when CMAKE_BUILD_TYPE is "Debug"
 +  SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fPIC")
+   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wextra")
    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wunused")
-   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wshadow")
