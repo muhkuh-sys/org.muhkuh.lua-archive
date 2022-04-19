@@ -35,7 +35,7 @@ strCfg_jonchkiHerePath = os.path.join(
     'jonchki'
 )
 # This is the Jonchki version to use.
-strCfg_jonchkiVersion = '0.0.6.1'
+strCfg_jonchkiVersion = '0.0.7.1'
 
 # This is ther verbose level. It can be one of the strings 'debug', 'info',
 # 'warning', 'error' or 'fatal'.
