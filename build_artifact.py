@@ -200,6 +200,59 @@ if tPlatform['host_distribution_id'] == 'ubuntu':
             ]
             strMake = 'make'
 
+        elif tPlatform['cpu_architecture'] == 'riscv64':
+            # Build on linux for riscv64.
+
+            astrDeb = [
+                'libacl1-dev:riscv64'
+            ]
+            install.install_foreign_debs(astrDeb, strCfg_workingFolder, strCfg_projectFolder)
+            strLib = os.path.join(
+                strCfg_workingFolder,
+                'packages',
+                'lib',
+                'riscv64-linux-gnu',
+                'libacl.a'
+            )
+            strLibNew = os.path.join(
+                strCfg_workingFolder,
+                'packages',
+                'usr',
+                'lib',
+                'riscv64-linux-gnu',
+                'libacl.a'
+            )
+            if os.path.exists(strLib) is not True:
+                if os.path.exists(strLibNew) is not True:
+                    raise Exception(
+                        'libacl does not exist in the 2 expected locations '
+                        '%s and %s.' % (
+                            strLib,
+                            strLibNew
+                        )
+                    )
+                else:
+                    os.symlink(
+                        strLibNew,
+                        strLib
+                    )
+
+            astrCMAKE_COMPILER = [
+                '-DCMAKE_TOOLCHAIN_FILE=%s/cmake/toolchainfiles/toolchain_ubuntu_riscv64.cmake' % strCfg_projectFolder
+            ]
+            astrCMAKE_PLATFORM = [
+                '-DJONCHKI_PLATFORM_DIST_ID=%s' % tPlatform['distribution_id'],
+                '-DJONCHKI_PLATFORM_DIST_VERSION=%s' % tPlatform['distribution_version'],
+                '-DJONCHKI_PLATFORM_CPU_ARCH=%s' % tPlatform['cpu_architecture']
+            ]
+
+            astrJONCHKI_SYSTEM = [
+                '--distribution-id %s' % tPlatform['distribution_id'],
+                '--distribution-version %s' % tPlatform['distribution_version'],
+                '--cpu-architecture %s' % tPlatform['cpu_architecture']
+            ]
+            strMake = 'make'
+
         else:
             raise Exception('Unknown CPU architecture: "%s"' % tPlatform['cpu_architecture'])
 

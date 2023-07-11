@@ -57,16 +57,9 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 	INCLUDE_DIRECTORIES(${EXTERNAL_INCLUDE_DIR})
 
-	IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-		# libarchive has the suffix "_static" on Windows.
-		SET(LIBARCHIVE_LIBRARY ${EXTERNAL_LIB_DIR}/libarchive_static.a)
-		# No ACL on Windows.
-		SET(ACL_LIB "")
-	ELSE(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-		SET(LIBARCHIVE_LIBRARY ${EXTERNAL_LIB_DIR}/libarchive.a)
-		# ACL is part of the required packages in a standard Ubuntu system.
-		SET(ACL_LIB "-lacl")
-	ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+	SET(LIBARCHIVE_LIBRARY ${EXTERNAL_LIB_DIR}/libarchive.a)
+	# ACL is part of the required packages in a standard Ubuntu system.
+	SET(ACL_LIB "-lacl")
 
 	SET_SOURCE_FILES_PROPERTIES(archive.i PROPERTIES CPLUSPLUS ON)
 	SET_SOURCE_FILES_PROPERTIES(archive.i PROPERTIES SWIG_FLAGS "")
@@ -89,14 +82,6 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	# Install the lua module.
 	INSTALL(TARGETS TARGET_archive DESTINATION ${INSTALL_DIR_LUA_MODULES})
 
-
-	# Add tests for this module.
-	IF((${CMAKE_SYSTEM_NAME} STREQUAL "Windows") AND (${CMAKE_COMPILER_IS_GNUCC}))
-		# Here are the MinGW specific tests.
-		ADD_TEST(NAME archive_MinGW_DLL_dependencies
-		         COMMAND "${PYTHON_EXECUTABLE}" ${CMAKE_HOME_DIRECTORY}/cmake/tests/mingw_dll_dependencies.py -u lua5.1 $<TARGET_FILE:TARGET_archive>)
-	ENDIF((${CMAKE_SYSTEM_NAME} STREQUAL "Windows") AND (${CMAKE_COMPILER_IS_GNUCC}))
-
 	#----------------------------------------------------------------------------
 	#
 	# Build a package for the selected platform.
@@ -109,29 +94,16 @@ IF((${BUILDCFG_ONLY_JONCHKI_CFG} STREQUAL "OFF"))
 	SET(CPACK_GENERATOR "TXZ")
 	INCLUDE(CPack)
 
-	IF(${JONCHKI_PLATFORM_DIST_ID} STREQUAL "windows")
-		# Package a windows build.
+	# Package a linux build.
 
-		# NOTE: Do not install the library again, there is an "INSTALL" already.
+	# NOTE: Do not install the library again, there is an "INSTALL" already.
 
-		CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/install_windows.lua
-		               ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
-		               @ONLY)
+	CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/install_linux.lua
+	               ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
+	               @ONLY)
 
-		INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
-		        DESTINATION .)
-	ELSE(${JONCHKI_PLATFORM_DIST_ID} STREQUAL "windows")
-		# Package a linux build.
-
-		# NOTE: Do not install the library again, there is an "INSTALL" already.
-
-		CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/install_linux.lua
-		               ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
-		               @ONLY)
-
-		INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
-		        DESTINATION .)
-	ENDIF(${JONCHKI_PLATFORM_DIST_ID} STREQUAL "windows")
+	INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/package/install.lua
+	        DESTINATION .)
 
 	CONFIGURE_FILE(installer/lua${BUILDCFG_LUA_VERSION}/archive.xml
 	               ${CPACK_OUTPUT_FILE_PREFIX}/lua${BUILDCFG_LUA_VERSION}-archive-${PROJECT_VERSION}-${JONCHKI_PLATFORM}.xml
