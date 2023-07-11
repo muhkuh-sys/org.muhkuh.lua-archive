@@ -35,12 +35,7 @@ strCfg_jonchkiHerePath = os.path.join(
     'jonchki'
 )
 # This is the Jonchki version to use.
-strCfg_jonchkiVersion = '0.0.7.1'
-
-# This is ther verbose level. It can be one of the strings 'debug', 'info',
-# 'warning', 'error' or 'fatal'.
-strCfg_jonchkiVerbose = 'debug'
-
+strCfg_jonchkiVersion = '0.0.11.1'
 # Look in this folder for Jonchki archives before downloading them.
 strCfg_jonchkiLocalArchives = os.path.join(
     strCfg_projectFolder,
@@ -55,16 +50,10 @@ strCfg_jonchkiInstallationFolder = os.path.join(
     'build'
 )
 
-strCfg_jonchkiLog51 = os.path.join(
-    strCfg_workingFolder,
-    'lua5.1',
-    'jonchki.log'
-)
-strCfg_jonchkiLog54 = os.path.join(
-    strCfg_workingFolder,
-    'lua5.4',
-    'jonchki.log'
-)
+# Select the verbose level for jonchki.
+# Possible values are "debug", "info", "warning", "error" and "fatal".
+strCfg_jonchkiVerbose = 'info'
+
 strCfg_jonchkiSystemConfiguration = os.path.join(
     strCfg_projectFolder,
     'jonchki',
