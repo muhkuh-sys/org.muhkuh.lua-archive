@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependency-log>
+	<dependencies>
+		<dependency group="net.zlib" module="zlib" artifact="zlib" version="1.2.13.1"/>
+		<dependency group="org.lua" module="lua" artifact="lua" version="5.1.5.11"/>
+		<dependency group="org.muhkuh.lua" module="archive" artifact="lua5.1-archive" version="0.0.3.1"/>
+	</dependencies>
+	<build-dependencies>
+	</build-dependencies>
+</dependency-log>
