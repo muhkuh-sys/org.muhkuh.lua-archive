@@ -14,21 +14,6 @@ jobs:
     strategy:
       matrix:
         platform:
-        - # Ubuntu 18.04 x86
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: x86
-        - # Ubuntu 18.04 x86_64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: x86_64
-        - # Ubuntu 18.04 arm64
-          image: ghcr.io/muhkuh-sys/mbs_ubuntu_1804_x86_64:latest
-          distribution-id: ubuntu
-          distribution-version: "18.04"
-          cpu-architecture: arm64
         - # Ubuntu 20.04 x86_64
           image: ghcr.io/muhkuh-sys/mbs_ubuntu_2004_x86_64:latest
           distribution-id: ubuntu
